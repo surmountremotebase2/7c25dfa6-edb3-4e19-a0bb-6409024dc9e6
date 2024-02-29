@@ -5,7 +5,7 @@ from surmount.logging import log
 
 # Assuming existence of a module that can fetch options chains
 # This will need to be replaced or implemented based on available data sources
-from surmount.data_sources import OptionsChain 
+from surmount.data import OptionsChain
 
 class TradingStrategy(Strategy):
     def __init__(self):
