@@ -1,5 +1,5 @@
 from surmount.base_class import Strategy, TargetAllocation
-from surmount.data import Asset, InsiderTrading, FairValue
+from surmount.data import Asset, InsiderTrading, Ratios
 from surmount.logging import log
 
 class TradingStrategy(Strategy):
@@ -7,7 +7,7 @@ class TradingStrategy(Strategy):
     def __init__(self):
         # Get S&P 500 tickers. Replace 'SP500_tickers' with actual list or method to fetch S&P 500 tickers
         self.tickers = SP500_tickers()  
-        self.data_list = [FairValue(i) for i in self.tickers] + [InsiderTrading(i) for i in self.tickers]
+        self.data_list = [Ratios(i)['priceFairValue'] for i in self.tickers] + [InsiderTrading(i) for i in self.tickers]
 
     @property
     def interval(self):
@@ -25,7 +25,7 @@ class TradingStrategy(Strategy):
         allocation_dict = {}
         for ticker in self.tickers:
             current_price = data["ohlcv"][-1][ticker]["close"]
-            fair_value_data = data[FairValue(ticker)]
+            fair_value_data = data[Ratios(ticker)['priceFairValue']]
             insider_trading_data = data[InsiderTrading(ticker)]
 
             # Check if fair value and insider trading data are available
