@@ -37,7 +37,7 @@ class TradingStrategy(Strategy):
 
     def insider_activity_analysis(self, data):
         """Analyzes the latest insider trading activity."""
-        activities = data[(self.insider_activity.key, self.ticker)]
+        activities = data[(self.insider_activity, self.ticker)]
         if not activities:
             return None
         latest_activity = activities[-1]
