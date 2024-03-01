@@ -6,7 +6,7 @@ class TradingStrategy(Strategy):
 
     def __init__(self):
         # Get S&P 500 tickers. Replace 'SP500_tickers' with actual list or method to fetch S&P 500 tickers
-        self.tickers = SP500_tickers()  
+        self.tickers = ["AAPL", "SPY", "GOOG", "F", "MPW"]  
         self.data_list = [Ratios(i)['priceFairValue'] for i in self.tickers] + [InsiderTrading(i) for i in self.tickers]
 
     @property
