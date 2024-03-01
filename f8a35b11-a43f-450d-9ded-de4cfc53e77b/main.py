@@ -1,6 +1,6 @@
 from surmount.base_class import Strategy, TargetAllocation
 from surmount.logging import log
-from surmount.data import Asset, InsiderTrading, MarketSentiment
+from surmount.data import Asset, InsiderTrading, SocialSentiment
 
 class TradingStrategy(Strategy):
     def __init__(self):
@@ -9,7 +9,7 @@ class TradingStrategy(Strategy):
         # Adding insider trading data sources for the tickers
         self.data_list = [InsiderTrading(i) for i in self.tickers]
         # Adding market sentiment analysis data sources for the tickers
-        self.data_list += [MarketSentiment(i) for i in self.tickers]
+        self.data_list += [SocialSentiment(i) for i in self.tickers]
 
     @property
     def interval(self):
