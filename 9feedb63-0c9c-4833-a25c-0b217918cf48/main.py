@@ -5,7 +5,7 @@ import pandas as pd
 class TradingStrategy(Strategy):
     def __init__(self):
         # Define the ticker of interest
-        self.ticker = "SPY"
+        self.ticker = "TSLA"
         
     @property
     def interval(self):
