@@ -1,7 +1,6 @@
 from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import RSI, MFI
 from surmount.logging import log
-from surmount.data import OHLCV
 
 class TradingStrategy(Strategy):
     def __init__(self):
