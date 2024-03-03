@@ -34,8 +34,8 @@ class TradingStrategy(Strategy):
                 continue'''
 
             # Calculate RSI and MFI for the stock
-            rsi = RSI(ticker, data["ohlcv"], 14)[-1]  # Assuming 14-day period for RSI
-            mfi = MFI(ticker, data["ohlcv"], 14)[-1]  # Assuming 14-day period for MFI
+            rsi = RSI(ticker, data["ohlcv"], 14)  # Assuming 14-day period for RSI
+            mfi = MFI(ticker, data["ohlcv"], 14)  # Assuming 14-day period for MFI
 
             # Check the conditions for buying or shorting
             if rsi < 30 and mfi < 20:
