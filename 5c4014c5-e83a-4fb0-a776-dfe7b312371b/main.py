@@ -30,9 +30,9 @@ class TradingStrategy(Strategy):
         allocation_dict = {}
 
         for ticker in self.tickers:
-            if ticker not in data["ohlcv"]:
+            '''if ticker not in data["ohlcv"]:
                 log(f"Data for {ticker} not found.")
-                continue
+                continue'''
 
             # Calculate RSI and MFI for the stock
             rsi = RSI(ticker, data["ohlcv"], 14)[-1]  # Assuming 14-day period for RSI
