@@ -8,7 +8,7 @@ class TradingStrategy(Strategy):
         # List of symbols to apply the strategy
         self.tickers = ["TSLA", "MSFT", "GOOG", "F", "MPW"]
         # Data required: OHLCV for RSI and MFI calculation
-        self.data_list = [OHLCV(i) for i in self.tickers]
+        #self.data_list = [OHLCV(i) for i in self.tickers]
 
     @property
     def interval(self):
@@ -20,10 +20,10 @@ class TradingStrategy(Strategy):
         # Return the list of tickers
         return self.tickers
 
-    @property
+    '''@property
     def data(self):
         # Data required for the strategy
-        return self.data_list
+        return self.data_list'''
 
     def run(self, data):
         # Initialize empty allocation dictionary
