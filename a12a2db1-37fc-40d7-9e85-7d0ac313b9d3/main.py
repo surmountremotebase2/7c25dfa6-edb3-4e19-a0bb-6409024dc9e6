@@ -41,10 +41,10 @@ class TradingStrategy(Strategy):
         '''
 
         if spxl_delta < spy_delta:
-            log("SPXL Underperforming spy, buying SPXL.")
+            #log("SPXL Underperforming spy, buying SPXL.")
             allocation_dict = {"SPXL": 1.0}
         else:
-            log("SPXL caught up - liquidating SPXL.")
+            #log("SPXL caught up - liquidating SPXL.")
             allocation_dict = {"SPXL": 0.0}
             
         # Return the target allocation based on our logic
