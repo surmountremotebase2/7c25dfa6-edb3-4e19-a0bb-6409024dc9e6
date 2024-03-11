@@ -28,16 +28,24 @@ class TradingStrategy(Strategy):
         
         # Check the recent performance difference between SPXL and SPY
         # If SPXL has been underperforming SPY, allocate toward SPXL
-        log("sma_SPXL on this datapoint:")
-        s = " ".join(str(x) for x in sma_SPXL)
 
-        exit()
-        if sma_SPXL[-1] < sma_SPY[-1]:
+        spxl_delta = sma_SPXL[-1] - sma_SPXL[-2]
+        spy_delta = sma_SPY[-1] - sma_SPY[-2]
+
+        '''if sma_SPXL[-1] < sma_SPY[-1]:
             #log("SPXL underperforming SPY, buying SPXL.")
             allocation_dict = {"SPXL": 1.0} # Put 100% in SPXL
         else:
             #log("SPXL not underperforming or outperforming SPY, liquidating SPXL.")
             allocation_dict = {"SPXL": 0.0} # Liquidate all SPXL
-        
+        '''
+
+        if spxl_delta < spy_delta:
+            log("SPXL Underperforming spy, buying SPXL.")
+            allocation_dict = {"SPXL": 1.0}
+        else:
+            log("SPXL caught up - liquidating SPXL.")
+            allocation_dict = {"SPXL": 0.0}
+            
         # Return the target allocation based on our logic
         return TargetAllocation(allocation_dict)
