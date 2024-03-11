@@ -29,8 +29,7 @@ class TradingStrategy(Strategy):
         # Check the recent performance difference between SPXL and SPY
         # If SPXL has been underperforming SPY, allocate toward SPXL
         log("sma_SPXL on this datapoint:")
-        for val in sma_SPXL:
-            log(str(val))
+        s = " ".join(str(x) for x in sma_SPXL)
 
         exit()
         if sma_SPXL[-1] < sma_SPY[-1]:
