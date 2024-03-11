@@ -29,8 +29,8 @@ class TradingStrategy(Strategy):
         # Check the recent performance difference between SPXL and SPY
         # If SPXL has been underperforming SPY, allocate toward SPXL
 
-        spxl_delta = sma_SPXL[-1] - sma_SPXL[-2]
-        spy_delta = sma_SPY[-1] - sma_SPY[-2]
+        spxl_delta = (sma_SPXL[-1] - sma_SPXL[-2]) / sma_SPXL[-1]
+        spy_delta = (sma_SPY[-1] - sma_SPY[-2]) / sma_SPY[-1]
 
         '''if sma_SPXL[-1] < sma_SPY[-1]:
             #log("SPXL underperforming SPY, buying SPXL.")
