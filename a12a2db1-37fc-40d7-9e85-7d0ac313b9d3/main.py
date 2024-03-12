@@ -1,8 +1,6 @@
 from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import SMA
 from surmount.logging import log
-from tensorflow.contrib.keras.preprocessing.text import Tokenizer
-
 
 class TradingStrategy(Strategy):
     @property
