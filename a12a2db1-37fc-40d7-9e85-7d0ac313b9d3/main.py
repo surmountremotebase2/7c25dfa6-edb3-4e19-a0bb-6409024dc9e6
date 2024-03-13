@@ -1,6 +1,7 @@
 from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import SMA
 from surmount.logging import log
+import pandas as pd 
 
 class TradingStrategy(Strategy):
     @property
