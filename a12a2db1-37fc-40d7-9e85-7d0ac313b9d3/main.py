@@ -24,7 +24,7 @@ class TradingStrategy(Strategy):
         sma_SPXS = SMA("SPXS", data["ohlcv"], length=5)
         
         # Ensure that we have enough data points to proceed
-        if not sma_SPXL or not sma_SPY or sma_SPXS or len(sma_SPXL) < 5 or len(sma_SPY) < 5 or len(sma_SPXS) < 5:
+        if not sma_SPXL or not sma_SPY or not sma_SPXS or len(sma_SPXL) < 5 or len(sma_SPY) < 5 or len(sma_SPXS) < 5:
             #log("Insufficient data for SMA calculation.")
             # Returning a neutral or "do-nothing" allocation if insufficient data
             return TargetAllocation({})
