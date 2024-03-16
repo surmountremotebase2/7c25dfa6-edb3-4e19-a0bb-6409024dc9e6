@@ -75,6 +75,8 @@ class TradingStrategy(Strategy):
             #log("SPXL caught up - liquidating SPXL.")
             allocation_dict = {"SPXL": 0.0}
         '''
-            
+        
+        if not allocation_dict:
+            allocation_dict = TargetAllocation({})
         # Return the target allocation based on our logic
         return TargetAllocation(allocation_dict)
