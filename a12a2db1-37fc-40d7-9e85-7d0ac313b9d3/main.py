@@ -42,6 +42,8 @@ class TradingStrategy(Strategy):
         # Determine overall trend based on the last 5 days
         upward_trend = sum(d > 0 for d in spy_differences)
         downward_trend = sum(d < 0 for d in spy_differences)
+        log(upward_trend)
+        log(downward_trend)
 
         #log("Checking trends")
         if upward_trend > downward_trend:
