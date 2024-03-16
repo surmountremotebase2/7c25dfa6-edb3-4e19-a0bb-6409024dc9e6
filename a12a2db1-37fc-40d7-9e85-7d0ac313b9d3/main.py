@@ -45,13 +45,13 @@ class TradingStrategy(Strategy):
 
         if upward_trend > downward_trend:
             allocation_dict = {"SPXS": 0.0}
-            if spxl_delta < spy_delta * 3:
+            if spxl_delta < spy_delta:
                 allocation_dict = {"SPXL": 1.0}
             else:
                 allocation_dict = {"SPXL": 0.0}
         elif upward_trend < downward_trend:
             allocation_dict = {"SPXL": 0.0}
-            if spxs_delta < abs(spy_delta * 3):
+            if spxs_delta < abs(spy_delta):
                 allocation_dict = {"SPXS": 1.0}
             else:
                 allocation_dict = {"SPXS": 0.0}
