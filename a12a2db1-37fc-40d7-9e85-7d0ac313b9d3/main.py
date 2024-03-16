@@ -40,8 +40,8 @@ class TradingStrategy(Strategy):
         spy_differences = [spy_recents[i+1] - spy_recents[i] for i in range(len(spy_recents)-1)]
 
         # Determine overall trend based on the last 5 days
-        upward_trend = sum(d > 0 for d in differences)
-        downward_trend = sum(d < 0 for d in differences)
+        upward_trend = sum(d > 0 for d in spy_differences)
+        downward_trend = sum(d < 0 for d in spy_differences)
 
         #log("Checking trends")
         if upward_trend > downward_trend:
