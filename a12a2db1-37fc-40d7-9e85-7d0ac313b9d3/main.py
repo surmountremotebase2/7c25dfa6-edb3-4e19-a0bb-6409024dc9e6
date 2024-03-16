@@ -59,7 +59,7 @@ class TradingStrategy(Strategy):
             else:
                 allocation_dict = {"SPXS": 0.0}
         else:
-            log("In the last else")
+            allocation_dict = TargetAllocation({})
 
         '''if sma_SPXL[-1] < sma_SPY[-1]:
             #log("SPXL underperforming SPY, buying SPXL.")
@@ -78,5 +78,6 @@ class TradingStrategy(Strategy):
         
         if not allocation_dict:
             allocation_dict = TargetAllocation({})
+
         # Return the target allocation based on our logic
         return TargetAllocation(allocation_dict)
