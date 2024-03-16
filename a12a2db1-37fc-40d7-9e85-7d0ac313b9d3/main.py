@@ -37,7 +37,7 @@ class TradingStrategy(Strategy):
         spxs_delta = (sma_SPXS[-1] - sma_SPXS[-2]) / sma_SPXS[-1]
 
         spy_recents = sma_SPY[-5:]
-        spy_differences = [last_values[i+1] - last_values[i] for i in range(len(last_values)-1)]
+        spy_differences = [spy_recents[i+1] - spy_recents[i] for i in range(len(spy_recents)-1)]
 
         # Determine overall trend based on the last 5 days
         upward_trend = sum(d > 0 for d in differences)
