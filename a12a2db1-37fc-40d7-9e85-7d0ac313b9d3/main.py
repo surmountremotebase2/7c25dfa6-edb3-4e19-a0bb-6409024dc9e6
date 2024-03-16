@@ -43,16 +43,16 @@ class TradingStrategy(Strategy):
         upward_trend = sum(d > 0 for d in differences)
         downward_trend = sum(d < 0 for d in differences)
 
-        log("Checking trends")
+        #log("Checking trends")
         if upward_trend > downward_trend:
             allocation_dict = {"SPXS": 0.0}
-            log("Upward trend")
+            #log("Upward trend")
             if spxl_delta < spy_delta:
                 allocation_dict = {"SPXL": 1.0}
             else:
                 allocation_dict = {"SPXL": 0.0}
         elif upward_trend < downward_trend:
-            log("downward trend")
+            #log("downward trend")
             allocation_dict = {"SPXL": 0.0}
             if spxs_delta < abs(spy_delta):
                 allocation_dict = {"SPXS": 1.0}
