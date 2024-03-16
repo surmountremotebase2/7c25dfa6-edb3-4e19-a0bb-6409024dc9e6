@@ -21,7 +21,7 @@ class TradingStrategy(Strategy):
         # Calculate the 5-day Simple Moving Average (SMA) for SPXL and SPY
         sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
-        sma_SPXS = SMA("SPXS", data["ohlcv"], len=5)
+        sma_SPXS = SMA("SPXS", data["ohlcv"], length=5)
         
         # Ensure that we have enough data points to proceed
         if not sma_SPXL or not sma_SPY or sma_SPXS or len(sma_SPXL) < 5 or len(sma_SPY) < 5 or len(sma_SPXS) < 5:
