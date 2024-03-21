@@ -36,7 +36,7 @@ class TradingStrategy(Strategy):
         spy_delta = (sma_SPY[-1] - sma_SPY[-2]) / sma_SPY[-1]
         spxs_delta = (sma_SPXS[-1] - sma_SPXS[-2]) / sma_SPXS[-1]
 
-        spy_recents = sma_SPY[-5:]
+        spy_recents = sma_SPY[-3:]
         spy_differences = [spy_recents[i+1] - spy_recents[i] for i in range(len(spy_recents)-1)]
 
         # Determine overall trend based on the last 5 days
@@ -47,14 +47,14 @@ class TradingStrategy(Strategy):
         if upward_trend > downward_trend:
             allocation_dict = {"SPXS": 0.0}
             #log("Upward trend")
-            if spxl_delta < spy_delta * 1.25:
+            if spxl_delta < spy_delta * 1.15:
                 allocation_dict = {"SPXL": 0.0}
             else:
                 allocation_dict = {"SPXL": 1.0}
         elif upward_trend < downward_trend:
             #log("downward trend")
             allocation_dict = {"SPXL": 0.0}
-            if spxs_delta < abs(spy_delta * 1.25):
+            if spxs_delta < abs(spy_delta * 1.15):
                 allocation_dict = {"SPXS": 0.0}
             else:
                 allocation_dict = {"SPXS": 1.0}
