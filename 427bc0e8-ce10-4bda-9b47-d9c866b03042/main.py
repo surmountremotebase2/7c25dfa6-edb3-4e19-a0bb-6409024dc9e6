@@ -62,7 +62,7 @@ class TradingStrategy(Strategy):
         if macdh_SPY[-1] < -1.65:
             allocation_dict = {"SPXS": 100, "SPXL": 0}
         else:
-            if rsi_SPY[-1] > 60: 
+            if rsi_SPY[-1] < 60: 
                 allocation_dict = {"SPXS": 0, "SPXL": 100}
             else:
                 allocation_dict = {"SPXL": 0, "SPXS": 0}
