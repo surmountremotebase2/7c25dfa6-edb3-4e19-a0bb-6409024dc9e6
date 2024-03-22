@@ -19,10 +19,8 @@ class TradingStrategy(Strategy):
         if not sma_VIX or len(sma_VIX) < 5:
             return TargetAllocation({})
         
-        if sma_VIX[-1] < 23:
-            allocation_dict = {"SPXL": 100}
-        elif sma_VIX[-1] > 23 and sma_VIX[-1] < 25:
-            allocation_dict = {"SPXL": 0, "SPXS": 0}
+        if sma_VIX[-1] < 25:
+            allocation_dict = {"SPXS": 0}
         else:
             allocation_dict = {"SPXS": 100}
 
