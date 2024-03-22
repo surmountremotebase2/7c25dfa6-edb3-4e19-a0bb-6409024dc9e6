@@ -30,7 +30,7 @@ class TradingStrategy(Strategy):
                 allocation_dict = {"SPXL": 0, "SPXS": 0}
         else:
             if sma_VIX[-1] > 25:
-                allocation_dict = {"SPXS": 100, "SPXL": 15}
+                allocation_dict = {"SPXS": 100, "SPXL": 0}
             else: 
                 allocation_dict = {"SPXS": 0, "SPXL": 0}
 
