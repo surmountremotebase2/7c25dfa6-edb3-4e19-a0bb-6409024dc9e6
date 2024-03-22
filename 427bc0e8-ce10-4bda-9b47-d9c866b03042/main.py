@@ -20,7 +20,7 @@ class TradingStrategy(Strategy):
         if not sma_VIX or len(sma_VIX) < 5:
             return TargetAllocation({})
 
-        macdh_SPY = macd_SPY['MACDh_12_26_9']
+        macdh_SPY = macd_SPY['MACDh_15_30_9']
 
         # Figure out the general trend of SPY
         if macdh_SPY[-1] > -0.15:
