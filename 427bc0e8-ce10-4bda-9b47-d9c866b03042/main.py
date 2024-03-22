@@ -59,7 +59,7 @@ class TradingStrategy(Strategy):
         if macdh_SPY[-1] < -3:
             allocation_dict = {"SPXS": 100, "SPXL": 0}
         else:
-            if upward_trend < downward_trend :
+            if upward_trend < downward_trend:
                 allocation_dict = {"SPXS": 0.0}
                 #log("Upward trend")
                 if spxl_delta < spy_delta * 1.15:
