@@ -23,7 +23,7 @@ class TradingStrategy(Strategy):
         macdh_SPY = macd_SPY['MACDh_12_26_9']
 
         # Figure out the general trend of SPY
-        if macdh_SPY[-1] < 0:
+        if macdh_SPY[-1] > 0:
             if sma_VIX[-1] > 25:
                 allocation_dict = {"SPXL": 100, "SPXS": 0}
             else:
