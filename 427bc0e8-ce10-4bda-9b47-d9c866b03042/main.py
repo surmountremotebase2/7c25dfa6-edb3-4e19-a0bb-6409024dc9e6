@@ -15,7 +15,7 @@ class TradingStrategy(Strategy):
     def run(self, data):
         # Calculating the 5-day SMA for VIX
         sma_VIX = SMA("VIX", data["ohlcv"], length=5)
-        macd_SPY = MACD("SPY", data["ohlcv"], 12, 26) # we want to use the MACDh_12_26_9
+        macd_SPY = MACD("SPY", data["ohlcv"], 15, 30) # we want to use the MACDh_12_26_9
 
         if not sma_VIX or len(sma_VIX) < 5:
             return TargetAllocation({})
