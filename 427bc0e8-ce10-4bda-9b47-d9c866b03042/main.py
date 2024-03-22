@@ -6,7 +6,7 @@ from surmount.data import Asset
 class TradingStrategy(Strategy):
     @property
     def assets(self):
-        return ["VIX", "SPXL", "SPXS"]
+        return ["VIX", "SPXL", "SPXS", "SPY"]
 
     @property
     def interval(self):
@@ -15,6 +15,9 @@ class TradingStrategy(Strategy):
     def run(self, data):
         # Calculating the 5-day SMA for VIX
         sma_VIX = SMA("VIX", data["ohlcv"], length=5)
+        macd_SPY = MACD("SPY", data["ohlcv", 12, 26])
+
+        # Figure out the general trend of SPY
 
         if not sma_VIX or len(sma_VIX) < 5:
             return TargetAllocation({})
