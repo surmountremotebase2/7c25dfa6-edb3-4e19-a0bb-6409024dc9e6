@@ -4,17 +4,13 @@ from surmount.logging import log
 from surmount.data import Asset
 
 class TradingStrategy(Strategy):
-    def __init__(self):
-        self.tickers = ["SPXL", "SPXS", "VIX"]  # SPXL for bullish, SPXS for bearish, VIX to gauge market fear
+    @property
+    def assets(self):
+        return ["VIX", "SPXL", "SPXY"]
 
     @property
     def interval(self):
-        # Using daily data to calculate the 5-day SMA of VIX
         return "1day"
-
-    @property
-    def assets(self):
-        return self.tickers
 
     @property
     def data(self):
