@@ -1,5 +1,5 @@
 from surmount.base_class import Strategy, TargetAllocation
-from surmount.technical_indicators import SMA  # We'll use the Simple Moving Average (SMA)
+from surmount.technical_indicators import SMA, MACD  # We'll use the Simple Moving Average (SMA)
 from surmount.logging import log
 from surmount.data import Asset
 
