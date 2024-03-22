@@ -15,7 +15,7 @@ class TradingStrategy(Strategy):
     def run(self, data):
         # Calculating the 5-day SMA for VIX
         sma_VIX = SMA("VIX", data["ohlcv"], length=5)
-        macd_SPY = MACD("SPY", data["ohlcv", 12, 26])
+        macd_SPY = MACD("SPY", data["ohlcv"], 12, 26)
 
         log(str(macd_SPY))
 
