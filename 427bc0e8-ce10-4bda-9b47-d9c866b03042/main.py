@@ -22,7 +22,7 @@ class TradingStrategy(Strategy):
 
         macdh_SPY = macd_SPY['MACDh_12_26_9']
 
-        print(str(macdh_SPY[-1]))
+        print("Value is: " + str(macdh_SPY[-1]))
         # Figure out the general trend of SPY
         if macdh_SPY[-1] > 0:
             if sma_VIX[-1] < 25:
