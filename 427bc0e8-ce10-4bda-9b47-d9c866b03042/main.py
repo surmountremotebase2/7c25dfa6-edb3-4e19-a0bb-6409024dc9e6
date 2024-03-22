@@ -56,7 +56,7 @@ class TradingStrategy(Strategy):
         else:
             allocation_dict = {}'''
 
-        if macdh_SPY[-1] < -1.75:
+        if macdh_SPY[-1] < -1.65:
             allocation_dict = {"SPXS": 100, "SPXL": 0}
         else:
             if upward_trend > downward_trend:
