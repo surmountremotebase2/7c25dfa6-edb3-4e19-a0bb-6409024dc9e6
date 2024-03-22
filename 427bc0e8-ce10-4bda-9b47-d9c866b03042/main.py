@@ -10,7 +10,7 @@ class TradingStrategy(Strategy):
 
     @property
     def interval(self):
-        return "1day"
+        return "4hour"
 
     def run(self, data):
         # Calculating the 5-day SMA for VIX
@@ -69,7 +69,7 @@ class TradingStrategy(Strategy):
             elif upward_trend > downward_trend:
                 #log("downward trend")
                 allocation_dict = {"SPXL": 0.0}
-                if spxs_delta < abs(spy_delta * 1.135):
+                if spxs_delta < abs(spy_delta * 1.15):
                     allocation_dict = {"SPXS": 0.0}
                 else:
                     allocation_dict = {"SPXS": 1.0}
