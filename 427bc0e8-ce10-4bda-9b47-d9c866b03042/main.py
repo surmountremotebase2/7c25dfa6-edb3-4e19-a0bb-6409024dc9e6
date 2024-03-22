@@ -15,12 +15,12 @@ class TradingStrategy(Strategy):
     def run(self, data):
         # Calculating the 5-day SMA for VIX
         sma_VIX = SMA("VIX", data["ohlcv"], length=5)
-        macd_SPY = MACD("SPY", data["ohlcv"], 15, 30) # we want to use the MACDh_12_26_9
+        macd_SPY = MACD("SPY", data["ohlcv"], 5, 10) # we want to use the MACDh_12_26_9
 
         if not sma_VIX or len(sma_VIX) < 5:
             return TargetAllocation({})
 
-        macdh_SPY = macd_SPY['MACDh_15_30_9']
+        macdh_SPY = macd_SPY['MACDh_5_10_9']
 
         # Figure out the general trend of SPY
         if macdh_SPY[-1] > -0.15:
