@@ -6,7 +6,7 @@ from surmount.data import Asset
 class TradingStrategy(Strategy):
     @property
     def assets(self):
-        return ["VIX", "SPXL", "SPXS", "SPY"]
+        return ["SPXL", "SPXS", "SPY"]
 
     @property
     def interval(self):
@@ -14,7 +14,7 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         # Calculating the 5-day SMA for VIX
-        sma_VIX = SMA("VIX", data["ohlcv"], length=5)
+        #sma_VIX = SMA("VIX", data["ohlcv"], length=5)
         macd_SPY = MACD("SPY", data["ohlcv"], 5, 10) # we want to use the MACDh_12_26_9
 
         sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
@@ -35,8 +35,8 @@ class TradingStrategy(Strategy):
         upward_trend = sum(d > 0 for d in spy_differences)
         downward_trend = sum(d < 0 for d in spy_differences)
 
-        if not sma_VIX or len(sma_VIX) < 5:
-            return TargetAllocation({})
+        #if not sma_VIX or len(sma_VIX) < 5:
+        #    return TargetAllocation({})
 
         macdh_SPY = macd_SPY['MACDh_5_10_9']
 
