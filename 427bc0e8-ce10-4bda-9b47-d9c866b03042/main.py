@@ -25,12 +25,12 @@ class TradingStrategy(Strategy):
         # Figure out the general trend of SPY
         if macdh_SPY[-1] > 0:
             if sma_VIX[-1] > 25:
-                allocation_dict = {"SPXL": 100, "SPXS": 0}
+                allocation_dict = {"SPXL": 75, "SPXS": 25}
             else:
                 allocation_dict = {"SPXL": 0, "SPXS": 0}
         else:
             if sma_VIX[-1] > 25:
-                allocation_dict = {"SPXS": 100, "SPXL": 0}
+                allocation_dict = {"SPXS": 75, "SPXL": 25}
             else: 
                 allocation_dict = {"SPXS": 0, "SPXL": 0}
 
