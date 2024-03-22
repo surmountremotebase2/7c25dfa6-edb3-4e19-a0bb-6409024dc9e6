@@ -69,7 +69,7 @@ class TradingStrategy(Strategy):
             elif upward_trend > downward_trend:
                 #log("downward trend")
                 allocation_dict = {"SPXL": 0.0}
-                if spxs_delta < abs(spy_delta * 1.15):
+                if spxs_delta < abs(spy_delta * 1.135):
                     allocation_dict = {"SPXS": 0.0}
                 else:
                     allocation_dict = {"SPXS": 1.0}
