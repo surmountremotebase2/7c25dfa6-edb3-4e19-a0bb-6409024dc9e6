@@ -6,7 +6,7 @@ from surmount.data import Asset
 class TradingStrategy(Strategy):
     @property
     def assets(self):
-        return ["VIX", "SPXL", "SPXY"]
+        return ["VIX", "SPXL", "SPXS"]
 
     @property
     def interval(self):
