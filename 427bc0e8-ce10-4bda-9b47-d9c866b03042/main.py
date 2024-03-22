@@ -1,5 +1,5 @@
 from surmount.base_class import Strategy, TargetAllocation
-from surmount.technical_indicators import SMA, MACD  # We'll use the Simple Moving Average (SMA)
+from surmount.technical_indicators import SMA, MACD, RSI  # We'll use the Simple Moving Average (SMA)
 from surmount.logging import log
 from surmount.data import Asset
 
@@ -20,6 +20,9 @@ class TradingStrategy(Strategy):
         sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
         sma_SPXS = SMA("SPXS", data["ohlcv"], length=5)
+
+        rsi_SPY = RSI("SPY", data["ohlcv"], length=14)
+        rsi_SPXL = RSI("SPXL", data["ohlcv"], length=14)
 
         spxl_delta = (sma_SPXL[-1] - sma_SPXL[-2]) / sma_SPXL[-1]
         spy_delta = (sma_SPY[-1] - sma_SPY[-2]) / sma_SPY[-1]
@@ -59,16 +62,10 @@ class TradingStrategy(Strategy):
         if macdh_SPY[-1] < -1.65:
             allocation_dict = {"SPXS": 100, "SPXL": 0}
         else:
-            if upward_trend > downward_trend:
-                allocation_dict = {"SPXS": 0.0}
-                #log("Upward trend")
-                if spxl_delta < spy_delta:
-                    allocation_dict = {"SPXL": 1.0}
-                else:
-                    allocation_dict = {"SPXL": 0.0}
+            if rsi_SPY[-1] > rsi_SPXL[-1]: 
+                allocation_dict = {"SPXS": 0, "SPXL": 100}
             else:
-                #log("In the else")
-                return TargetAllocation({})
+                allocation_dict = {"SPXL": 0, "SPXS": 0}
 
 
         return TargetAllocation(allocation_dict)
