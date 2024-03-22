@@ -10,7 +10,7 @@ class TradingStrategy(Strategy):
 
     @property
     def interval(self):
-        return "4hour"
+        return "1day"
 
     def run(self, data):
         # Calculating the 5-day SMA for VIX
