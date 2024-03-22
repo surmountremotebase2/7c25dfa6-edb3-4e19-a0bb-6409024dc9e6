@@ -39,6 +39,6 @@ class TradingStrategy(Strategy):
         elif macdh_SPY[-1] < -0.1:
             allocation_dict = {"SPXL": 100, "SPXS": 0}
         else:
-            allocation_dict = {"SPXL": 0, "SPXS": 0}
+            allocation_dict = {}
 
         return TargetAllocation(allocation_dict)
