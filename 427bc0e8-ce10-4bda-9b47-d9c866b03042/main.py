@@ -20,8 +20,8 @@ class TradingStrategy(Strategy):
             return TargetAllocation({})
         
         if sma_VIX[-1] < 25:
-            allocation_dict = {"SPXS": 0}
+            allocation_dict = {"SPXS": 0, "SPXL": 0}
         else:
-            allocation_dict = {"SPXS": 100}
+            allocation_dict = {"SPXS": 50, "SPXL": 50}
 
         return TargetAllocation(allocation_dict)
