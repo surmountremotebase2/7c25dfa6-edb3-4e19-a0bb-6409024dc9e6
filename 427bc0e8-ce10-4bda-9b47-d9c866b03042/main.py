@@ -17,6 +17,21 @@ class TradingStrategy(Strategy):
         sma_VIX = SMA("VIX", data["ohlcv"], length=5)
         macd_SPY = MACD("SPY", data["ohlcv"], 5, 10) # we want to use the MACDh_12_26_9
 
+        sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
+        sma_SPY = SMA("SPY", data["ohlcv"], length=5)
+        sma_SPXS = SMA("SPXS", data["ohlcv"], length=5)
+
+        spxl_delta = (sma_SPXL[-1] - sma_SPXL[-2]) / sma_SPXL[-1]
+        spy_delta = (sma_SPY[-1] - sma_SPY[-2]) / sma_SPY[-1]
+        spxs_delta = (sma_SPXS[-1] - sma_SPXS[-2]) / sma_SPXS[-1]
+
+        spy_recents = sma_SPY[-15:]
+        spy_differences = [spy_recents[i+1] - spy_recents[i] for i in range(len(spy_recents)-1)]
+
+        
+        upward_trend = sum(d > 0 for d in spy_differences)
+        downward_trend = sum(d < 0 for d in spy_differences)
+
         if not sma_VIX or len(sma_VIX) < 5:
             return TargetAllocation({})
 
@@ -34,11 +49,19 @@ class TradingStrategy(Strategy):
             else: 
                 allocation_dict = {"SPXS": 0, "SPXL": 0}'''
         
-        if macdh_SPY[-1] > 2:
+        '''if macdh_SPY[-1] > 2:
             allocation_dict = {"SPXS": 100, "SPXL": 0}
         elif macdh_SPY[-1] < -0.1:
             allocation_dict = {"SPXL": 100, "SPXS": 0}
         else:
-            allocation_dict = {}
+            allocation_dict = {}'''
+
+        if macdh_SPY[-1] < -3:
+            allocation_dict = {"SPXS": 100, "SPXL": 0}
+        else:
+
 
         return TargetAllocation(allocation_dict)
+
+
+
