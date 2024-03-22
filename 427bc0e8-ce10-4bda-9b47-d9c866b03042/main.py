@@ -13,9 +13,7 @@ class TradingStrategy(Strategy):
         return "1day"
 
     def run(self, data):
-        # Calculating the 5-day SMA for VIX
-        #sma_VIX = SMA("VIX", data["ohlcv"], length=5)
-        macd_SPY = MACD("SPY", data["ohlcv"], 5, 10) # we want to use the MACDh_12_26_9
+        macd_SPY = MACD("SPY", data["ohlcv"], 5, 10)
 
         sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
@@ -35,29 +33,7 @@ class TradingStrategy(Strategy):
         upward_trend = sum(d > 0 for d in spy_differences)
         downward_trend = sum(d < 0 for d in spy_differences)
 
-        #if not sma_VIX or len(sma_VIX) < 5:
-        #    return TargetAllocation({})
-
         macdh_SPY = macd_SPY['MACDh_5_10_9']
-
-        # Figure out the general trend of SPY
-        '''if macdh_SPY[-1] > -0.15:
-            if sma_VIX[-1] > 27:
-                allocation_dict = {"SPXL": 100, "SPXS": 0}
-            else:
-                allocation_dict = {"SPXL": 0, "SPXS": 0}
-        else:
-            if sma_VIX[-1] > 27:
-                allocation_dict = {"SPXS": 100, "SPXL": 0}
-            else: 
-                allocation_dict = {"SPXS": 0, "SPXL": 0}'''
-        
-        '''if macdh_SPY[-1] > 2:
-            allocation_dict = {"SPXS": 100, "SPXL": 0}
-        elif macdh_SPY[-1] < -0.1:
-            allocation_dict = {"SPXL": 100, "SPXS": 0}
-        else:
-            allocation_dict = {}'''
 
         if macdh_SPY[-1] < -1.69:
             allocation_dict = {"SPXS": 100, "SPXL": 0}
