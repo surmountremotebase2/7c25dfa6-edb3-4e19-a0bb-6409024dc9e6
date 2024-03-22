@@ -17,12 +17,13 @@ class TradingStrategy(Strategy):
         sma_VIX = SMA("VIX", data["ohlcv"], length=5)
         macd_SPY = MACD("SPY", data["ohlcv"], 12, 26) # we want to use the MACDh_12_26_9
 
-        if not sma_VIX or len(sma_VIX) < 5:
-            return TargetAllocation({})
+        '''if not sma_VIX or len(sma_VIX) < 5:
+            return TargetAllocation({})'''
 
         macdh_SPY = macd_SPY['MACDh_12_26_9']
 
         print("Value is: " + str(macdh_SPY[-1]))
+
         # Figure out the general trend of SPY
         if macdh_SPY[-1] > 0:
             if sma_VIX[-1] < 25:
