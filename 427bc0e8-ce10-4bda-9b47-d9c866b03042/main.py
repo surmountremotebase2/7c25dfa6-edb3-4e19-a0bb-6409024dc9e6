@@ -16,6 +16,7 @@ class TradingStrategy(Strategy):
         # Calculating the 5-day SMA for VIX
         sma_VIX = SMA("VIX", data["ohlcv"], length=5)
         macd_SPY = MACD("SPY", data["ohlcv"], 5, 10) # we want to use the MACDh_12_26_9
+        macd_SPXL = MACD("SPXL", data["ohlcv"])
 
         sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
@@ -62,7 +63,7 @@ class TradingStrategy(Strategy):
         if macdh_SPY[-1] < -1.65:
             allocation_dict = {"SPXS": 100, "SPXL": 0}
         else:
-            if rsi_SPY[-1] > rsi_SPXL[-1] * 1.1: 
+            if rsi_SPY[-1] > 60: 
                 allocation_dict = {"SPXS": 0, "SPXL": 100}
             else:
                 allocation_dict = {"SPXL": 0, "SPXS": 0}
