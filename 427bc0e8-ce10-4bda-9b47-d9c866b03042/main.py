@@ -17,6 +17,8 @@ class TradingStrategy(Strategy):
         sma_VIX = SMA("VIX", data["ohlcv"], length=5)
         macd_SPY = MACD("SPY", data["ohlcv", 12, 26])
 
+        log(str(macd_SPY))
+
         # Figure out the general trend of SPY
 
         if not sma_VIX or len(sma_VIX) < 5:
