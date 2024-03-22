@@ -20,6 +20,7 @@ class TradingStrategy(Strategy):
         if not sma_VIX or len(sma_VIX) < 5:
             return TargetAllocation({})
 
+        print(str(macd_SPY['MACDh_12_26_9']))
         # Figure out the general trend of SPY
         if macd_SPY['MACDh_12_26_9'][-1] > 0:
             if sma_VIX[-1] < 25:
