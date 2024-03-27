@@ -25,7 +25,6 @@ class TradingStrategy(Strategy):
         
         # Ensure that we have enough data points to proceed
         if not sma_SPXL or not sma_SPY or not sma_SPXS or len(sma_SPXL) < 5 or len(sma_SPY) < 5 or len(sma_SPXS) < 5:
-            #log("Insufficient data for SMA calculation.")
             # Returning a neutral or "do-nothing" allocation if insufficient data
             return TargetAllocation({})
         
@@ -44,38 +43,20 @@ class TradingStrategy(Strategy):
         downward_trend = sum(d < 0 for d in spy_differences)
 
         #log("Checking trends")
-        if upward_trend < downward_trend:
+        if upward_trend > downward_trend:
             allocation_dict = {"SPXS": 0.0}
-            #log("Upward trend")
             if spxl_delta < spy_delta * 1.15:
                 allocation_dict = {"SPXL": 0.0}
             else:
                 allocation_dict = {"SPXL": 1.0}
-        elif upward_trend > downward_trend:
-            #log("downward trend")
+        elif upward_trend < downward_trend:
             allocation_dict = {"SPXL": 0.0}
             if spxs_delta < abs(spy_delta * 1.15):
                 allocation_dict = {"SPXS": 0.0}
             else:
                 allocation_dict = {"SPXS": 1.0}
         else:
-            #log("In the else")
             return TargetAllocation({})
-
-        '''if sma_SPXL[-1] < sma_SPY[-1]:
-            #log("SPXL underperforming SPY, buying SPXL.")
-            allocation_dict = {"SPXL": 1.0} # Put 100% in SPXL
-        else:
-            #log("SPXL not underperforming or outperforming SPY, liquidating SPXL.")
-            allocation_dict = {"SPXL": 0.0} # Liquidate all SPXL
-
-        if spxl_delta < spy_delta:
-            #log("SPXL Underperforming spy, buying SPXL.")
-            allocation_dict = {"SPXL": 0.00}
-        else:
-            #log("SPXL caught up - liquidating SPXL.")
-            allocation_dict = {"SPXL": 0.0}
-        '''
         
         if not allocation_dict:
             allocation_dict = TargetAllocation({})
