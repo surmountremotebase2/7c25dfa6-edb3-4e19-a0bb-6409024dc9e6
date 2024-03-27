@@ -37,7 +37,7 @@ class TradingStrategy(Strategy):
 
         if upward_trend > downward_trend: # Go in on long
             if macdh_SPY[-1] < -1.68:
-                allocation_dict = {"SPXS": 80, "SPXL": 20}
+                allocation_dict = {"SPXS": 75, "SPXL": 25}
             else:
                 if rsi_SPY[-1] < 62: 
                     allocation_dict = {"SPXS": 20, "SPXL": 80}
