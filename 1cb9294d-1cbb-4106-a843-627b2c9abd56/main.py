@@ -26,7 +26,7 @@ class TradingStrategy(Strategy):
         spy_delta = (sma_SPY[-1] - sma_SPY[-2]) / sma_SPY[-1]
         spxs_delta = (sma_SPXS[-1] - sma_SPXS[-2]) / sma_SPXS[-1]
 
-        spy_recents = sma_SPY[-3:]
+        spy_recents = sma_SPY[-10:]
         spy_differences = [spy_recents[i+1] - spy_recents[i] for i in range(len(spy_recents)-1)]
 
         
@@ -35,14 +35,25 @@ class TradingStrategy(Strategy):
 
         macdh_SPY = macd_SPY['MACDh_5_10_9']
 
-        if macdh_SPY[-1] < -1.68:
-            allocation_dict = {"SPXS": 80, "SPXL": 20}
-        else:
-            if rsi_SPY[-1] < 62: 
-                allocation_dict = {"SPXS": 20, "SPXL": 80}
+        if upward_trend > downward_trend: # Go in on long
+            if macdh_SPY[-1] < -1.68:
+                allocation_dict = {"SPXS": 60, "SPXL": 40}
             else:
-                allocation_dict = {"SPXL": 0, "SPXS": 0}
-
+                if rsi_SPY[-1] < 62: 
+                    allocation_dict = {"SPXS": 20, "SPXL": 80}
+                else:
+                    allocation_dict = {"SPXL": 0, "SPXS": 0}
+        elif upward_trend < downward_trend:
+            # Go in on short
+            if macdh_SPY[-1] < -1.68:
+                allocation_dict = {"SPXS": 90, "SPXL": 10}
+            else:
+                if rsi_SPY[-1] < 62: 
+                    allocation_dict = {"SPXS": 30, "SPXL": 70}
+                else:
+                    allocation_dict = {"SPXL": 0, "SPXS": 0}
+        else:
+            return TargetAllocation({})
 
         return TargetAllocation(allocation_dict)
 
