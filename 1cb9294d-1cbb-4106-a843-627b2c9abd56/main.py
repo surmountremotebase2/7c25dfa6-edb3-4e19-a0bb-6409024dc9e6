@@ -40,7 +40,7 @@ class TradingStrategy(Strategy):
                 allocation_dict = {"SPXS": 70, "SPXL": 30}
             else:
                 if rsi_SPY[-1] < 62: 
-                    allocation_dict = {"SPXS": 20, "SPXL": 80}
+                    allocation_dict = {"SPXS": 10, "SPXL": 90}
                 else:
                     allocation_dict = {"SPXL": 0, "SPXS": 0}
         elif upward_trend < downward_trend:
