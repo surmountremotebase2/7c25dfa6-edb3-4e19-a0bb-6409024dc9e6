@@ -43,7 +43,7 @@ class TradingStrategy(Strategy):
                     allocation_dict = {"SPXS": 10, "SPXL": 90}
                 else:
                     allocation_dict = {"SPXL": 0, "SPXS": 0}
-        elif upward_trend < downward_trend:
+        '''elif upward_trend < downward_trend:
             # Go in on short
             if macdh_SPY[-1] < -1.68:
                 allocation_dict = {"SPXS": 90, "SPXL": 10}
@@ -51,7 +51,7 @@ class TradingStrategy(Strategy):
                 if rsi_SPY[-1] < 62: 
                     allocation_dict = {"SPXS": 30, "SPXL": 70}
                 else:
-                    allocation_dict = {"SPXL": 0, "SPXS": 0}
+                    allocation_dict = {"SPXL": 0, "SPXS": 0}'''
         else:
             return TargetAllocation({})
 
