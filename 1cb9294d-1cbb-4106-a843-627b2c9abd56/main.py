@@ -35,12 +35,20 @@ class TradingStrategy(Strategy):
 
         macdh_SPY = macd_SPY['MACDh_5_10_9']
 
-        if upward_trend > downward_trend: # Go in on long
+        '''if upward_trend > downward_trend: # Go in on long
             if macdh_SPY[-1] < -1.68:
                 allocation_dict = {"SPXS": 70, "SPXL": 30}
             else:
                 if rsi_SPY[-1] < 62: 
                     allocation_dict = {"SPXS": 10, "SPXL": 90}
+                else:
+                    allocation_dict = {"SPXL": 0, "SPXS": 0}'''
+        if upward_trend < downward_trend:
+            if macdh_SPY[-1] < -1.68:
+                allocation_dict = {"SPXS": 90, "SPXL": 10}
+            else:
+                if rsi_SPY[-1] < 62: 
+                    allocation_dict = {"SPXS": 30, "SPXL": 70}
                 else:
                     allocation_dict = {"SPXL": 0, "SPXS": 0}
         else:
