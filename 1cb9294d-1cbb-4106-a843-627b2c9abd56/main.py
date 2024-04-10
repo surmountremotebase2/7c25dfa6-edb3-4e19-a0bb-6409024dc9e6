@@ -2,6 +2,7 @@ from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import SMA, MACD, RSI, EMA  # We'll use the Simple Moving Average (SMA)
 from surmount.logging import log
 from surmount.data import Asset
+import json
 
 class TradingStrategy(Strategy):
     @property
@@ -56,6 +57,9 @@ class TradingStrategy(Strategy):
 
         short_sma_SPY = SMA("SPY", data['ohlcv'], length=4)
         short_ema_SPY = EMA("SPY", data['ohlcv'], length=4)
+
+        json_object = json.dumps(data, indent=4)
+        log(json_object)
 
         if data['ohlcv'][-1]['SPY']['close'] > (short_ema_SPY[-1] * 1.02):
             # Above our short SMA with buffer - upward trajectory
