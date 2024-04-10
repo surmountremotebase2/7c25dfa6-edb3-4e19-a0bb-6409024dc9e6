@@ -58,7 +58,7 @@ class TradingStrategy(Strategy):
         
         tickers = self.assets()
 
-        for ticker in tickers:
+        for ticker in assets:
             print(str(ticker))
 
         return TargetAllocation(allocation_dict)
