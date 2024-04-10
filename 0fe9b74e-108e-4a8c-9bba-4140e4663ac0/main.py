@@ -13,7 +13,7 @@ class TradingStrategy(Strategy):
         return "1day"
 
     def run(self, data):
-        macd_SPY = MACD("SPY", data["ohlcv"], 5, 10)
+        '''macd_SPY = MACD("SPY", data["ohlcv"], 5, 10)
 
         sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
@@ -53,6 +53,9 @@ class TradingStrategy(Strategy):
                     allocation_dict = {"SPXL": 0, "SPXS": 0}
         else:
             return TargetAllocation({})
+            '''
+        
+        log(str(data))
 
         return TargetAllocation(allocation_dict)
 
