@@ -57,7 +57,7 @@ class TradingStrategy(Strategy):
             '''
 
         for ticker in self.assets:
-            print(str(ticker))
+            log(str(ticker))
 
         return TargetAllocation(allocation_dict)
 
