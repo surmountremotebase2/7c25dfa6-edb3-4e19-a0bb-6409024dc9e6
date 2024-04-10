@@ -56,9 +56,8 @@ class TradingStrategy(Strategy):
             return TargetAllocation({})
             '''
         
-        json_object = json.dumps(data, indent=4)
-
-        log(json_object)
+        for ticker in self.assets():
+            print(str(ticker))
 
         return TargetAllocation(allocation_dict)
 
