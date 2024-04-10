@@ -37,7 +37,7 @@ class TradingStrategy(Strategy):
 
         log(str(data['holdings']))
 
-        if upward_trend > downward_trend: # Go in on long
+        '''if upward_trend > downward_trend: # Go in on long
             if macdh_SPY[-1] < -1.68:
                 allocation_dict = {"SPXS": 70, "SPXL": 30}
             else:
@@ -54,7 +54,25 @@ class TradingStrategy(Strategy):
                 else:
                     allocation_dict = {"SPXL": 0, "SPXS": 0}
         else:
-            return TargetAllocation({})
+            return TargetAllocation({})'''
+
+        short_sma_SPY = SMA("SPY", data['ohlcv'], length=3)
+
+        if data['ohlcv'][-1]['SPY'] > (short_sma_SPY * 1.02):
+            # Above our short SMA with buffer - upward trajectory
+            if rsi_SPY < 62:
+                allocation_dict = {"SPXS": 10, "SPXL": 90}
+            else:
+                allocation_dict = {"SPXL": 0, "SPXS": 0}
+        elif data['ohlcv'][-1]['SPY'] < short_sma_SPY:
+            # Below our short SMA with buffer - downward trajectory
+            if macdh_SPY[-1] < -1.68:
+                allocation_dict = {"SPXS": 100, "SPXL": 0}
+            else:
+                allocation_dict = {"SPXL": 0, "SPXS": 0}
+        else:
+            # About even - we don't really care.
+            return TargetAllocation({}) 
 
         return TargetAllocation(allocation_dict)
 
