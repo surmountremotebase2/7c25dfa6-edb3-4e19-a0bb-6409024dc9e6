@@ -54,7 +54,7 @@ class TradingStrategy(Strategy):
         else:
             return TargetAllocation({})'''
 
-        short_sma_SPY = SMA("SPY", data['ohlcv'], length=3)
+        short_sma_SPY = SMA("SPY", data['ohlcv'], length=4)
 
         if data['ohlcv'][-1]['SPY']['close'] > (short_sma_SPY[-1] * 1.02):
             # Above our short SMA with buffer - upward trajectory
