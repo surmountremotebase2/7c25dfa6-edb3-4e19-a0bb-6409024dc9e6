@@ -2,6 +2,7 @@ from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import SMA, MACD, RSI  # We'll use the Simple Moving Average (SMA)
 from surmount.logging import log
 from surmount.data import Asset
+import json
 
 class TradingStrategy(Strategy):
     @property
@@ -55,7 +56,9 @@ class TradingStrategy(Strategy):
             return TargetAllocation({})
             '''
         
-        log(str(data))
+        json_object = json.dumps(data, indent=4)
+
+        log(json_object)
 
         return TargetAllocation(allocation_dict)
 
