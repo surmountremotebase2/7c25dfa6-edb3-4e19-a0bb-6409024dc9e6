@@ -11,7 +11,7 @@ class TradingStrategy(Strategy):
 
     @property
     def interval(self):
-        return "1day"
+        return "4hour"
 
     def run(self, data):
         macd_SPY = MACD("SPY", data["ohlcv"], 5, 10)
