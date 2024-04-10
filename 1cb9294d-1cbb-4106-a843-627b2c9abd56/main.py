@@ -58,7 +58,7 @@ class TradingStrategy(Strategy):
 
         if data['ohlcv'][-1]['SPY']['close'] > (short_sma_SPY[-1] * 1.02):
             # Above our short SMA with buffer - upward trajectory
-            if rsi_SPY < 62:
+            if rsi_SPY[-1] < 62:
                 allocation_dict = {"SPXS": 10, "SPXL": 90}
             else:
                 allocation_dict = {"SPXL": 0, "SPXS": 0}
