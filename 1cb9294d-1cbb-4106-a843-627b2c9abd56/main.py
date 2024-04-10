@@ -61,7 +61,7 @@ class TradingStrategy(Strategy):
         json_object = json.dumps(data, indent=4)
         log(json_object)
 
-        if data['ohlcv'][-1]['SPY']['close'] > (short_ema_SPY[-1] * 1.02):
+        '''if data['ohlcv'][-1]['SPY']['close'] > (short_ema_SPY[-1] * 1.02):
             # Above our short SMA with buffer - upward trajectory
             logging_value = "Upward Potential on: " + data['ohlcv'][-1]['SPY']['date']
             log(logging_value)
@@ -77,7 +77,7 @@ class TradingStrategy(Strategy):
                 allocation_dict = {"SPXL": 0, "SPXS": 0}
         else:
             # About even - we don't really care.
-            return TargetAllocation({}) 
+            return TargetAllocation({}) '''
 
         return TargetAllocation(allocation_dict)
 
