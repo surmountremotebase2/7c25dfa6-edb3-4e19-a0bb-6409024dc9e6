@@ -58,7 +58,7 @@ class TradingStrategy(Strategy):
 
         if data['ohlcv'][-1]['SPY']['close'] > (short_sma_SPY[-1] * 1.02):
             # Above our short SMA with buffer - upward trajectory
-            logging_value = "Upward Potential on: ".join(data['ohlcv'][-1]['SPY']['date'])
+            logging_value = "Upward Potential on: " + data['ohlcv'][-1]['SPY']['date']
             log(logging_value)
             if rsi_SPY[-1] < 62:
                 allocation_dict = {"SPXS": 10, "SPXL": 90}
