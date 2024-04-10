@@ -7,7 +7,7 @@ import json
 class TradingStrategy(Strategy):
     @property
     def assets(self):
-        return ["SPXL", "SPXS", "SPY"]
+        return ["SPXL", "SPXS", "SPY", "AAPL"]
 
     @property
     def interval(self):
