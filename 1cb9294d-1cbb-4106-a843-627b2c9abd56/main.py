@@ -35,7 +35,7 @@ class TradingStrategy(Strategy):
 
         macdh_SPY = macd_SPY['MACDh_5_10_9']
 
-        log(str(data['holdings']))
+        log(str(data[0]))
 
         if upward_trend > downward_trend: # Go in on long
             if macdh_SPY[-1] < -1.68:
