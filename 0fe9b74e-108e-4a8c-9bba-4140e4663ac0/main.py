@@ -56,8 +56,18 @@ class TradingStrategy(Strategy):
             return TargetAllocation({})
             '''
 
+        macd_test = 
+
         for ticker in self.assets:
-            log(str(ticker))
+            # Idnetify if we're in an upward trend for the Moving Average Breakout 
+            # We're going to use a 10-day lookback on our SMA. 
+            if data['ohlcv'][-1][ticker] > SMA(ticker, data['ohlcv'], length=10):
+                moving_breakout_flag = 1
+            else:
+                moving_breakout_flag = 0
+            
+            # Identify if we're at a MACD Breakout point. We're going to use a 8, 17 day MACD. 
+            
 
         allocation_dict = {}
 
