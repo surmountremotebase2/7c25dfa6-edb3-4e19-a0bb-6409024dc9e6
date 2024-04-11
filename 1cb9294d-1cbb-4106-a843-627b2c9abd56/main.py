@@ -27,10 +27,10 @@ class TradingStrategy(Strategy):
         short_sma_SPY = SMA("SPY", data['ohlcv'], length=5)
         short_ema_SPY = EMA("SPY", data['ohlcv'], length=5)
 
-        if short_ema_SPY[-1] > (short_sma_SPY[-1] * 1.02):
+        if short_ema_SPY[-1] > (short_sma_SPY[-1] * 1.03):
             # Bull Market
             allocation_dict = {"SPXL": 90, "SPXS": 10}
-        elif short_sma_SPY[-1] > (short_ema_SPY[-1] * 1.02):
+        elif short_sma_SPY[-1] > (short_ema_SPY[-1] * 0.999):
             # Bear Market
             allocation_dict = {"SPXL": 10, "SPXS": 90}
         else:
