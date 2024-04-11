@@ -61,6 +61,9 @@ class TradingStrategy(Strategy):
         if not short_ema_spy or short_ema_SPY > short_sma_SPY:
             # Bull Market
             allocation_dict = {"SPXL": 100, "SPXS": 0}
+            f = open("./holdings.csv", "a")
+            f.write("Bull market purchase")
+            f.close()
         else:
             # Bear Market
             allocation_dict = {"SPXL": 0, "SPXS": 100}
