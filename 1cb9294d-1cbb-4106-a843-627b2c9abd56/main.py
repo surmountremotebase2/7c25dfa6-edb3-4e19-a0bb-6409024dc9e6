@@ -55,8 +55,8 @@ class TradingStrategy(Strategy):
         else:
             return TargetAllocation({})'''
 
-        short_sma_SPY = SMA("SPY", data['ohlcv'], length=4)
-        short_ema_SPY = EMA("SPY", data['ohlcv'], length=4)
+        short_sma_SPY = SMA("SPY", data['ohlcv'], length=5)
+        short_ema_SPY = EMA("SPY", data['ohlcv'], length=5)
 
         if not short_ema_SPY or short_ema_SPY > short_sma_SPY:
             # Bull Market
