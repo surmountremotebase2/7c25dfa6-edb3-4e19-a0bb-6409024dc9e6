@@ -8,7 +8,7 @@ class TradingStrategy(Strategy):
 
     def __init__(self):
         self.tickers = ["SPXL", "SPXS", "SPY", "AAPL"]
-        self.data_list = [Ratios("AAPL")]
+        self.data_list = [FinancialStatement("AAPL")]
 
     @property
     def assets(self):
@@ -35,7 +35,7 @@ class TradingStrategy(Strategy):
 
         #macdh_SPY = macd_SPY['MACDh_5_10_9']
 
-        ratios_trading_dict = data[("ratios", "AAPL")]
+        ratios_trading_dict = data[("financial_statement", "AAPL")]
 
         json_object = json.dumps(ratios_trading_dict, indent=4)
 
