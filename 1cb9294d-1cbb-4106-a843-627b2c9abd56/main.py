@@ -1,7 +1,7 @@
 from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import SMA, MACD, RSI, EMA  # We'll use the Simple Moving Average (SMA)
 from surmount.logging import log
-from surmount.data import Asset, InsiderTrading
+from surmount.data import Asset, Ratios
 import json
 
 class TradingStrategy(Strategy):
