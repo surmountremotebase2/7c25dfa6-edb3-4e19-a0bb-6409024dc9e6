@@ -24,10 +24,10 @@ class TradingStrategy(Strategy):
 
         #macdh_SPY = macd_SPY['MACDh_5_10_9']
 
-        short_sma_SPY = SMA("SPY", data['ohlcv'], length=15)
-        short_ema_SPY = EMA("SPY", data['ohlcv'], length=15)
+        short_sma_SPY = SMA("SPY", data['ohlcv'], length=3)
+        short_ema_SPY = EMA("SPY", data['ohlcv'], length=3)
 
-        if short_ema_SPY[-1] > short_sma_SPY[-1]:
+        if short_ema_SPY[-1] > (short_sma_SPY[-1] * 1.02):
             # Bull Market
             allocation_dict = {"SPXL": 90, "SPXS": 10}
         else:
