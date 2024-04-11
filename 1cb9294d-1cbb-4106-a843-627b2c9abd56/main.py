@@ -1,16 +1,27 @@
 from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import SMA, MACD, RSI, EMA  # We'll use the Simple Moving Average (SMA)
 from surmount.logging import log
-from surmount.data import Asset
+from surmount.data import Asset, InsiderTrading
+import json
 
 class TradingStrategy(Strategy):
+
+    def __init__(self):
+        self.tickers = ["SPXL", "SPXS", "SPY", "AAPL"]
+        self.data_list = [InsiderTrading("AAPL")]
+
     @property
     def assets(self):
-        return ["SPXL", "SPXS", "SPY"]
+        #return ["SPXL", "SPXS", "SPY", "AAPL"]
+        return self.tickers
 
     @property
     def interval(self):
         return "1day"
+
+    @property
+    def data(self):
+        return self.data_list
 
     def run(self, data):
         #macd_SPY = MACD("SPY", data["ohlcv"], 5, 10)
@@ -23,6 +34,12 @@ class TradingStrategy(Strategy):
         #downward_trend = sum(d < 0 for d in spy_differences)
 
         #macdh_SPY = macd_SPY['MACDh_5_10_9']
+
+        insider_trading_dict = data[("insider_trading", "AAPL")]
+
+        json_object = json.dumps(insider_trading_dict, indent=4)
+
+        log(json_object)
 
         short_sma_SPY = SMA("SPY", data['ohlcv'], length=5)
         short_ema_SPY = EMA("SPY", data['ohlcv'], length=5)
