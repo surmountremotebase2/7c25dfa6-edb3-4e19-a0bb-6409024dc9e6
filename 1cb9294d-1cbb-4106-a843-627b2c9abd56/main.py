@@ -30,7 +30,7 @@ class TradingStrategy(Strategy):
         if short_ema_SPY[-1] > (short_sma_SPY[-1] * 1.02):
             # Bull Market
             allocation_dict = {"SPXL": 90, "SPXS": 10}
-        elif short_sma_SPY > (short_ema_SPY * 1.02):
+        elif short_sma_SPY[-1] > (short_ema_SPY[-1] * 1.02):
             # Bear Market
             allocation_dict = {"SPXL": 10, "SPXS": 90}
         else:
