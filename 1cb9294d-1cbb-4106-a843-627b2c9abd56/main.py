@@ -34,6 +34,6 @@ class TradingStrategy(Strategy):
             # Bear Market
             allocation_dict = {"SPXL": 10, "SPXS": 90}
         else:
-            allocation_dict = {"SPXL": 0, "SPXS": 0}
+            allocation_dict = {}
 
         return TargetAllocation(allocation_dict)
