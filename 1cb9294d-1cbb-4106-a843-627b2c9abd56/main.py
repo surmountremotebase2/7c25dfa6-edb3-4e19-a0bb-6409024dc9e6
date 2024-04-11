@@ -24,8 +24,8 @@ class TradingStrategy(Strategy):
 
         #macdh_SPY = macd_SPY['MACDh_5_10_9']
 
-        short_sma_SPY = SMA("SPY", data['ohlcv'], length=10)
-        short_ema_SPY = EMA("SPY", data['ohlcv'], length=5)
+        short_sma_SPY = SMA("SPY", data['ohlcv'], length=7)
+        short_ema_SPY = EMA("SPY", data['ohlcv'], length=7)
 
         if short_ema_SPY[-1] > short_sma_SPY[-1]:
             # Bull Market
