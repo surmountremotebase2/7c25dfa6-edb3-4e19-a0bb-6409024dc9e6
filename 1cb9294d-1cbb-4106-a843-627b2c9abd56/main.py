@@ -58,8 +58,12 @@ class TradingStrategy(Strategy):
         short_sma_SPY = SMA("SPY", data['ohlcv'], length=4)
         short_ema_SPY = EMA("SPY", data['ohlcv'], length=4)
 
-        json_object = json.dumps(data, indent=4)
-        log(json_object)
+        if not short_ema_spy or short_ema_SPY > short_sma_SPY:
+            # Bull Market
+            allocation_dict = {"SPXL": 100, "SPXS": 0}
+        else:
+            # Bear Market
+            allocation_dict = {"SPXL": 0, "SPXS": 100}
 
         '''if data['ohlcv'][-1]['SPY']['close'] > (short_ema_SPY[-1] * 1.02):
             # Above our short SMA with buffer - upward trajectory
