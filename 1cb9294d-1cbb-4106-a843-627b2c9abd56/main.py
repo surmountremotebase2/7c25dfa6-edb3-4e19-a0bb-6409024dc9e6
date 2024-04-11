@@ -58,7 +58,7 @@ class TradingStrategy(Strategy):
         short_sma_SPY = SMA("SPY", data['ohlcv'], length=4)
         short_ema_SPY = EMA("SPY", data['ohlcv'], length=4)
 
-        if not short_ema_spy or short_ema_SPY > short_sma_SPY:
+        if not short_ema_SPY or short_ema_SPY > short_sma_SPY:
             # Bull Market
             allocation_dict = {"SPXL": 100, "SPXS": 0}
             f = open("./holdings.csv", "a")
