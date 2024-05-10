@@ -25,7 +25,7 @@ class TradingStrategy(Strategy):
          return TargetAllocation({})
     
       if not bool(holdings):
-          reutn TargetAllocation({}) 
+          return TargetAllocation({}) 
 
       current_price_spy = data[-1]["SPY"]['close']
       current_price_qqq = data[-1]["QQQ"]['close']
