@@ -21,7 +21,7 @@ class TradingStrategy(Strategy):
       spy_ma = SMA("SPY", data, 5)
       qqq_ma = SMA("QQQ", data, 5)
 
-      log(str(data[0]))
+      #log(str(data[0]))
       
 
       if len(data)<5:
@@ -34,24 +34,24 @@ class TradingStrategy(Strategy):
       current_price_qqq = data[-1]["QQQ"]['close']
 
       if current_price_spy < spy_ma[-1]:
-         log("going long spy")
+         #log("going long spy")
          if holdings["SPY"] >= 0:
             spy_stake = min(1, holdings["SPY"]+0.1)
          else:
             spy_stake = 0.4
       elif current_price_spy > spy_ma[-1]:
-         log("selling spy")
+         #log("selling spy")
          if holdings["SPY"] > 0:
             spy_stake = 0
 
       if current_price_qqq < qqq_ma[-1]:
-         log("going long qqq")
+         #log("going long qqq")
          if holdings["QQQ"] >= 0:
             qqq_stake = min(1, holdings["QQQ"]+0.1)
          else:
             qqq_stake = 0.4
       elif current_price_qqq > qqq_ma[-1]:
-         log("selling qqq")
+         #log("selling qqq")
          if holdings["QQQ"] > 0:
             qqq_stake = 0
 
