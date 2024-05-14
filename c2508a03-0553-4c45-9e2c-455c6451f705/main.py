@@ -10,7 +10,7 @@ class TradingStrategy(Strategy):
 
    @property
    def interval(self):
-      return "1day"
+      return "5min"
 
    def run(self, data):
       holdings = data["holdings"]
