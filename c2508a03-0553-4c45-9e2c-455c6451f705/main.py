@@ -10,7 +10,7 @@ class TradingStrategy(Strategy):
 
    @property
    def interval(self):
-      return "1day"
+      return "5min"
 
    def run(self, data):
       holdings = data["holdings"]
@@ -20,6 +20,9 @@ class TradingStrategy(Strategy):
 
       spy_ma = SMA("SPY", data, 5)
       qqq_ma = SMA("QQQ", data, 5)
+
+      print(data[0])
+      
 
       if len(data)<5:
          return TargetAllocation({})
