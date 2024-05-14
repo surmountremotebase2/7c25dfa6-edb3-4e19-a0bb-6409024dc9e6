@@ -21,7 +21,7 @@ class TradingStrategy(Strategy):
       spy_ma = SMA("SPY", data, 5)
       qqq_ma = SMA("QQQ", data, 5)
 
-      log(data[0])
+      log(str(data[0]))
       
 
       if len(data)<5:
