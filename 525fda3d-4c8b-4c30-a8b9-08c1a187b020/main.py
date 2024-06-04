@@ -20,3 +20,4 @@ class TradingStrategy(Strategy):
     def run(self, data):
         insider_trading_dict = data[("insider_trading", "AAPL")]
         print(insider_trading)
+        return None
