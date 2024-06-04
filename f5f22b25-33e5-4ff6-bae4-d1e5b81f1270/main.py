@@ -8,7 +8,7 @@ class TradingStrategy(Strategy):
     @property
     def assets(self):
         # Define the assets to be used in the strategy
-        return ["SPDN", "SPY", "SH"]
+        return ["SSO", "SPY", "SDS"]
 
     @property
     def interval(self):
@@ -18,23 +18,23 @@ class TradingStrategy(Strategy):
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
         
-        # Calculate the 5-day Simple Moving Average (SMA) for spdn and SPY
-        sma_spdn = SMA("SPDN", data["ohlcv"], length=5)
+        # Calculate the 5-day Simple Moving Average (SMA) for sso and SPY
+        sma_sso = SMA("SSO", data["ohlcv"], length=5)
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
-        sma_sh = SMA("SH", data["ohlcv"], length=5)
+        sma_sds = SMA("SDS", data["ohlcv"], length=5)
         
         # Ensure that we have enough data points to proceed
-        if not sma_spdn or not sma_SPY or not sma_sh or len(sma_spdn) < 5 or len(sma_SPY) < 5 or len(sma_sh) < 5:
+        if not sma_sso or not sma_SPY or not sma_sds or len(sma_sso) < 5 or len(sma_SPY) < 5 or len(sma_sds) < 5:
             #log("Insufficient data for SMA calculation.")
             # Returning a neutral or "do-nothing" allocation if insufficient data
             return TargetAllocation({})
         
-        # Check the recent performance difference between spdn and SPY
-        # If spdn has been underperforming SPY, allocate toward spdn
+        # Check the recent performance difference between sso and SPY
+        # If sso has been underperforming SPY, allocate toward sso
 
-        spdn_delta = (sma_spdn[-1] - sma_spdn[-2]) / sma_spdn[-1]
+        sso_delta = (sma_sso[-1] - sma_sso[-2]) / sma_sso[-1]
         spy_delta = (sma_SPY[-1] - sma_SPY[-2]) / sma_SPY[-1]
-        sh_delta = (sma_sh[-1] - sma_sh[-2]) / sma_sh[-1]
+        sds_delta = (sma_sds[-1] - sma_sds[-2]) / sma_sds[-1]
 
         spy_recents = sma_SPY[-15:]
         spy_differences = [spy_recents[i+1] - spy_recents[i] for i in range(len(spy_recents)-1)]
@@ -45,19 +45,19 @@ class TradingStrategy(Strategy):
 
         #log("Checking trends")
         if upward_trend < downward_trend:
-            allocation_dict = {"SH": 0.0}
+            allocation_dict = {"SDS": 0.0}
             #log("Upward trend")
-            if spdn_delta < spy_delta * 1.15:
-                allocation_dict = {"SPDN": 0.0}
+            if sso_delta < spy_delta * 1.15:
+                allocation_dict = {"SSO": 0.0}
             else:
-                allocation_dict = {"SPDN": 1.0}
+                allocation_dict = {"SSO": 1.0}
         elif upward_trend > downward_trend:
             #log("downward trend")
-            allocation_dict = {"SPDN": 0.0}
-            if sh_delta < abs(spy_delta * 1.15):
-                allocation_dict = {"SH": 0.0}
+            allocation_dict = {"SSO": 0.0}
+            if sds_delta < abs(spy_delta * 1.15):
+                allocation_dict = {"SDS": 0.0}
             else:
-                allocation_dict = {"SH": 1.0}
+                allocation_dict = {"SDS": 1.0}
         else:
             #log("In the else")
             return TargetAllocation({})
