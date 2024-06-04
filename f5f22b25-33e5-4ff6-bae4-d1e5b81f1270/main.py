@@ -8,7 +8,7 @@ class TradingStrategy(Strategy):
     @property
     def assets(self):
         # Define the assets to be used in the strategy
-        return ["SPXL", "SPY", "SPXS"]
+        return ["spdn", "SPY", "sh"]
 
     @property
     def interval(self):
@@ -18,23 +18,23 @@ class TradingStrategy(Strategy):
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
         
-        # Calculate the 5-day Simple Moving Average (SMA) for SPXL and SPY
-        sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
+        # Calculate the 5-day Simple Moving Average (SMA) for spdn and SPY
+        sma_spdn = SMA("spdn", data["ohlcv"], length=5)
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
-        sma_SPXS = SMA("SPXS", data["ohlcv"], length=5)
+        sma_sh = SMA("sh", data["ohlcv"], length=5)
         
         # Ensure that we have enough data points to proceed
-        if not sma_SPXL or not sma_SPY or not sma_SPXS or len(sma_SPXL) < 5 or len(sma_SPY) < 5 or len(sma_SPXS) < 5:
+        if not sma_spdn or not sma_SPY or not sma_sh or len(sma_spdn) < 5 or len(sma_SPY) < 5 or len(sma_sh) < 5:
             #log("Insufficient data for SMA calculation.")
             # Returning a neutral or "do-nothing" allocation if insufficient data
             return TargetAllocation({})
         
-        # Check the recent performance difference between SPXL and SPY
-        # If SPXL has been underperforming SPY, allocate toward SPXL
+        # Check the recent performance difference between spdn and SPY
+        # If spdn has been underperforming SPY, allocate toward spdn
 
-        spxl_delta = (sma_SPXL[-1] - sma_SPXL[-2]) / sma_SPXL[-1]
+        spdn_delta = (sma_spdn[-1] - sma_spdn[-2]) / sma_spdn[-1]
         spy_delta = (sma_SPY[-1] - sma_SPY[-2]) / sma_SPY[-1]
-        spxs_delta = (sma_SPXS[-1] - sma_SPXS[-2]) / sma_SPXS[-1]
+        sh_delta = (sma_sh[-1] - sma_sh[-2]) / sma_sh[-1]
 
         spy_recents = sma_SPY[-15:]
         spy_differences = [spy_recents[i+1] - spy_recents[i] for i in range(len(spy_recents)-1)]
@@ -45,36 +45,36 @@ class TradingStrategy(Strategy):
 
         #log("Checking trends")
         if upward_trend < downward_trend:
-            allocation_dict = {"SPXS": 0.0}
+            allocation_dict = {"sh": 0.0}
             #log("Upward trend")
-            if spxl_delta < spy_delta * 1.15:
-                allocation_dict = {"SPXL": 0.0}
+            if spdn_delta < spy_delta * 1.15:
+                allocation_dict = {"spdn": 0.0}
             else:
-                allocation_dict = {"SPXL": 1.0}
+                allocation_dict = {"spdn": 1.0}
         elif upward_trend > downward_trend:
             #log("downward trend")
-            allocation_dict = {"SPXL": 0.0}
-            if spxs_delta < abs(spy_delta * 1.15):
-                allocation_dict = {"SPXS": 0.0}
+            allocation_dict = {"spdn": 0.0}
+            if sh_delta < abs(spy_delta * 1.15):
+                allocation_dict = {"sh": 0.0}
             else:
-                allocation_dict = {"SPXS": 1.0}
+                allocation_dict = {"sh": 1.0}
         else:
             #log("In the else")
             return TargetAllocation({})
 
-        '''if sma_SPXL[-1] < sma_SPY[-1]:
-            #log("SPXL underperforming SPY, buying SPXL.")
-            allocation_dict = {"SPXL": 1.0} # Put 100% in SPXL
+        '''if sma_spdn[-1] < sma_SPY[-1]:
+            #log("spdn underperforming SPY, buying spdn.")
+            allocation_dict = {"spdn": 1.0} # Put 100% in spdn
         else:
-            #log("SPXL not underperforming or outperforming SPY, liquidating SPXL.")
-            allocation_dict = {"SPXL": 0.0} # Liquidate all SPXL
+            #log("spdn not underperforming or outperforming SPY, liquidating spdn.")
+            allocation_dict = {"spdn": 0.0} # Liquidate all spdn
 
-        if spxl_delta < spy_delta:
-            #log("SPXL Underperforming spy, buying SPXL.")
-            allocation_dict = {"SPXL": 0.00}
+        if spdn_delta < spy_delta:
+            #log("spdn Underperforming spy, buying spdn.")
+            allocation_dict = {"spdn": 0.00}
         else:
-            #log("SPXL caught up - liquidating SPXL.")
-            allocation_dict = {"SPXL": 0.0}
+            #log("spdn caught up - liquidating spdn.")
+            allocation_dict = {"spdn": 0.0}
         '''
         
         if not allocation_dict:
