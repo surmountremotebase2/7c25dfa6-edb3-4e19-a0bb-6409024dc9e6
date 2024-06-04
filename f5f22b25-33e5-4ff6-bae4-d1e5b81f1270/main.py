@@ -5,9 +5,6 @@ import pandas as pd
 import numpy as np 
 
 class TradingStrategy(Strategy):
-
-    count = 0
-
     @property
     def assets(self):
         # Define the assets to be used in the strategy
@@ -19,9 +16,6 @@ class TradingStrategy(Strategy):
         return "1hour"
 
     def run(self, data):
-        count += 1
-        if count % 2 == 0:
-            return None
         # This is the principal method where the strategy logic is defined.
         
         # Calculate the 5-day Simple Moving Average (SMA) for sso and SPY
