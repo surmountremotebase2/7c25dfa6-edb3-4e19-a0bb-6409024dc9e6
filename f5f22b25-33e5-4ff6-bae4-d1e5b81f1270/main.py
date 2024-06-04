@@ -8,7 +8,7 @@ class TradingStrategy(Strategy):
     @property
     def assets(self):
         # Define the assets to be used in the strategy
-        return ["spdn", "SPY", "sh"]
+        return ["SPDN", "SPY", "SH"]
 
     @property
     def interval(self):
@@ -19,9 +19,9 @@ class TradingStrategy(Strategy):
         # This is the principal method where the strategy logic is defined.
         
         # Calculate the 5-day Simple Moving Average (SMA) for spdn and SPY
-        sma_spdn = SMA("spdn", data["ohlcv"], length=5)
+        sma_spdn = SMA("SPDN", data["ohlcv"], length=5)
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
-        sma_sh = SMA("sh", data["ohlcv"], length=5)
+        sma_sh = SMA("SH", data["ohlcv"], length=5)
         
         # Ensure that we have enough data points to proceed
         if not sma_spdn or not sma_SPY or not sma_sh or len(sma_spdn) < 5 or len(sma_SPY) < 5 or len(sma_sh) < 5:
@@ -45,37 +45,22 @@ class TradingStrategy(Strategy):
 
         #log("Checking trends")
         if upward_trend < downward_trend:
-            allocation_dict = {"sh": 0.0}
+            allocation_dict = {"SH": 0.0}
             #log("Upward trend")
             if spdn_delta < spy_delta * 1.15:
-                allocation_dict = {"spdn": 0.0}
+                allocation_dict = {"SPDN": 0.0}
             else:
-                allocation_dict = {"spdn": 1.0}
+                allocation_dict = {"SPDN": 1.0}
         elif upward_trend > downward_trend:
             #log("downward trend")
-            allocation_dict = {"spdn": 0.0}
+            allocation_dict = {"SPDN": 0.0}
             if sh_delta < abs(spy_delta * 1.15):
-                allocation_dict = {"sh": 0.0}
+                allocation_dict = {"SH": 0.0}
             else:
-                allocation_dict = {"sh": 1.0}
+                allocation_dict = {"SH": 1.0}
         else:
             #log("In the else")
             return TargetAllocation({})
-
-        '''if sma_spdn[-1] < sma_SPY[-1]:
-            #log("spdn underperforming SPY, buying spdn.")
-            allocation_dict = {"spdn": 1.0} # Put 100% in spdn
-        else:
-            #log("spdn not underperforming or outperforming SPY, liquidating spdn.")
-            allocation_dict = {"spdn": 0.0} # Liquidate all spdn
-
-        if spdn_delta < spy_delta:
-            #log("spdn Underperforming spy, buying spdn.")
-            allocation_dict = {"spdn": 0.00}
-        else:
-            #log("spdn caught up - liquidating spdn.")
-            allocation_dict = {"spdn": 0.0}
-        '''
         
         if not allocation_dict:
             allocation_dict = TargetAllocation({})
