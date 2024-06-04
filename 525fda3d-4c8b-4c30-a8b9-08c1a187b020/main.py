@@ -3,13 +3,13 @@ from surmount.technical_indicators import SMA
 from surmount.logging import log
 import pandas as pd 
 import numpy as np 
-from surmount.data import InsiderTrading
+from surmount.data import SentateTrades
 
 class TradingStrategy(Strategy):
     @property
     def assets(self):
         # Define the assets to be used in the strategy
-        self.data_list = [InsiderTrading("AAPL")]
+        self.data_list = [SentateTrades("AAPL")]
         return ["AAPL"]
 
     @property
