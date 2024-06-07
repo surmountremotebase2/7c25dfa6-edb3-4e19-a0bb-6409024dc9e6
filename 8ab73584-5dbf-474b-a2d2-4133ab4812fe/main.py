@@ -20,6 +20,8 @@ class TradingStrategy(Strategy):
    def run(self, data):
       today = datetime.now()
       log(str(next(iter(data['ohlcv'][-1].values()))['date']))
+
+      today = datetime.strptime(str(next(iter(data['ohlcv'][-1].values()))['date']), '%Y-%m-%d %H:%M:%S')
       #log(str(data['ohlcv'][-1]))
       if today.day == 7:
          if self.equal_weighting: 
