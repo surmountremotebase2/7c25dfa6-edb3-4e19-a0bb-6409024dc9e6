@@ -19,7 +19,7 @@ class TradingStrategy(Strategy):
 
    def run(self, data):
       today = datetime.now()
-      log(data)
+      log(str(data))
       if today.day == 7:
          if self.equal_weighting: 
             allocation_dict = {i: 1/len(self.tickers) for i in self.tickers}
