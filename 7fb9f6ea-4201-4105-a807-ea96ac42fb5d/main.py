@@ -19,6 +19,7 @@ class TradingStrategy(Strategy):
       return self.tickers
 
    def run(self, data):
+      # Ensure there is at least one data point
       if len(data['ohlcv']) < 1:
          self.counter += 1
          if self.counter >= 30:
@@ -27,16 +28,31 @@ class TradingStrategy(Strategy):
                allocation_dict = {I: 1/len(self.tickers) for I in self.tickers}
             else:
                allocation_dict = {self.tickers[I]: self.weights[I] for I in range(len(self.tickers))} 
+            return TargetAllocation(allocation_dict)
          else:
              return None
 
-      today = datetime.strptime(str(next(iter(data['ohlcv'][-1].values()))['date']), '%Y-%m-%d %H:%M:%S')
-      yesterday = datetime.strptime(str(next(iter(data['ohlcv'][-2].values()))['date']), '%Y-%m-%d %H:%M:%S')
+      # Iterate over tickers to find one with data
+      today_data, yesterday_data = None, None
+      for ticker_data in data['ohlcv'][-2]:
+         if ticker_data['date']:
+            today_data = ticker_data['data'][-1]
+            yesterday_data = ticker_data['data'][-2]
+            break
+
+      # If no data found for any tickers, return None
+      if not today_data or not yesterday_data:
+         return None
+
+      # Parse dates
+      today = datetime.strptime(today_data['date'], '%Y-%m-%d %H:%M:%S')
+      yesterday = datetime.strptime(yesterday_data['date'], '%Y-%m-%d %H:%M:%S')
       
       if today.day == 17 or (today.day > 17 and yesterday.day < 17):
          if self.equal_weighting: 
             allocation_dict = {I: 1/len(self.tickers) for I in self.tickers}
          else:
-            allocation_dict = {self.tickers[I]: self.weights[I] for I in range(len(self.tickers))} 
+            allocation_dict = {self.tickers[I]: self.weights[I] for I in range(len(self.tickers))}
          return TargetAllocation(allocation_dict)
+      
       return None
