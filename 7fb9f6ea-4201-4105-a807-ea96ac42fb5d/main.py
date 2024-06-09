@@ -36,7 +36,7 @@ class TradingStrategy(Strategy):
       print(str(data['ohlcv'][-1]))
       today_data, yesterday_data = None, None
       for ticker_data in data['ohlcv'][-2]:
-         if ticker_data['date']:
+         if data['ohlcv'][-2][ticker_data]['date']:
             today_data = ticker_data['data'][-1]
             yesterday_data = ticker_data['data'][-2]
             break
