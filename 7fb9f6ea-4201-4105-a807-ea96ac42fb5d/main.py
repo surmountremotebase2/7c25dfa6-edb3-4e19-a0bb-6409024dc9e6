@@ -29,7 +29,7 @@ class TradingStrategy(Strategy):
           self.counter += 1
           if self.counter >= 30:
               self.counter = 0
-                 if self.equal_weighting:
+              if self.equal_weighting:
                  allocation_dict = {i: 1 / len(self.tickers) for i in self.tickers}
               else:
                  allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))}
