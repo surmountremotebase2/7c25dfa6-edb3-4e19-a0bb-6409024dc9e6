@@ -5,7 +5,7 @@ from datetime import datetime
 class TradingStrategy(Strategy):
 
    def __init__(self):
-      self.tickers = ["IBM", "GOOGL", "MSFT", "INTC", "HON", "NVDA", "RGTI", "BABA", "DELL", "ANET", "SMCI", "WDC"]
+      self.tickers = ["IBM", "GOOGL", "MSFT", "INTC", "HON", "NVDA", "BABA", "DELL", "ANET", "SMCI", "WDC"]
       self.weights = [0.1, 0.10, 0.10, 0.05, 0.05, 0.10, .05, .10, .10, .05, .10, .05]
       self.equal_weighting = False
       self.counter = 0
@@ -20,7 +20,6 @@ class TradingStrategy(Strategy):
 
    def run(self, data):
       if len(data['ohlcv']) < 1:
-         log("Here")
          self.counter += 1
          if self.counter >= 30:
             self.counter = 0
