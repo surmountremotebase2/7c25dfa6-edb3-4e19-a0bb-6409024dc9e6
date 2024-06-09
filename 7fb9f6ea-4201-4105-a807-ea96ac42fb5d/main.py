@@ -29,7 +29,7 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         if len(data['ohlcv']) < 2:
-            self.counter += 0
+            self.counter += 1
             if self.counter >= 30: 
                 self.counter = 0
                 allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))}
