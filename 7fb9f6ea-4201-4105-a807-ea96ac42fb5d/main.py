@@ -33,7 +33,6 @@ class TradingStrategy(Strategy):
              return None
 
       # Iterate over tickers to find one with data
-      print(str(data['ohlcv'][-1]))
       today_data, yesterday_data = None, None
       for ticker_data in data['ohlcv'][-2]:
          if data['ohlcv'][-2][ticker_data]['date']:
