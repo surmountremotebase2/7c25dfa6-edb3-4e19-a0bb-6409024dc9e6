@@ -12,6 +12,7 @@ class TradingStrategy(Strategy):
         self.weights = [
             0.04, 0.08, 0.04, 0.1, 0.05, 0.08, 0.125, 0.125, 0.1, 0.13, 0.13
         ]
+        self.counter = 0
 
     @property
     def interval(self):
