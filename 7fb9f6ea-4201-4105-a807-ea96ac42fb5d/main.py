@@ -26,7 +26,7 @@ class TradingStrategy(Strategy):
             self.counter = 0
             if self.equal_weighting: 
                allocation_dict = {i: 1/len(self.tickers) for i in self.tickers}
-             else:
+            else:
                allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))} 
          else:
              return None
