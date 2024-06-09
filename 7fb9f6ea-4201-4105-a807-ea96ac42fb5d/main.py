@@ -17,7 +17,7 @@ class TradingStrategy(Strategy):
             0.025, 0.025, 0.015, 0.015, 0.015, 0.015, 0.015, 0.015, 0.015,
             0.015, 0.015
         ]
-        counter = 0
+        self.counter = 0
 
     @property
     def interval(self):
@@ -29,10 +29,10 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         if len(data['ohlcv']) < 2:
-            counter += 1
-            if counter == 30:
+            self.counter += 1
+            if counter >= 30:
                 allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))}
-                counter = 0
+                self.counter = 0
                 return TargetAllocation(allocation_dict)
             else:
                 return None
