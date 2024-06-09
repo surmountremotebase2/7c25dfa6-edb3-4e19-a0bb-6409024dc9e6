@@ -14,7 +14,7 @@ class TradingStrategy(Strategy):
           0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03
       ]
       self.equal_weighting = False
-      selv.counter = 0
+      self.counter = 0
 
    @property
    def interval(self):
