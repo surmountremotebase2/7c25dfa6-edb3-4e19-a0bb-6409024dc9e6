@@ -4,42 +4,33 @@ from datetime import datetime
 
 class TradingStrategy(Strategy):
 
-    def __init__(self):
-        self.tickers = [
-            "DKNG", "WYNN", "LVS", "CZR", "MLCO", "MGM", "PENN", "IGT", "LNW", "GDEN",
-            "BYD"
-        ]
-        self.weights = [
-            0.04, 0.08, 0.04, 0.1, 0.05, 0.08, 0.125, 0.125, 0.1, 0.13, 0.13
-        ]
-        self.counter = 0
+   def __init__(self):
+      self.tickers = [
+          "AMZN", "MSFT", "GOOGL", "IBM", "ORCL", "CSCO", "NVDA", "CRM", "EQIX", "DLR",
+          "NET", "FSLY", "PSTG", "NTAP", "AKAM", "HPE", "ANET", "JNPR", "FTNT", "FFIV"
+      ]
+      self.weights = [
+          0.10, 0.10, 0.10, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05,
+          0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03, 0.03
+      ]
+      self.equal_weighting = False
 
-    @property
-    def interval(self):
-        return "1day"
+   @property
+   def interval(self):
+      return "1day"
 
-    @property
-    def assets(self):
-        return self.tickers
+   @property
+   def assets(self):
+      return self.tickers
 
-    def run(self, data):
-        if len(data['ohlcv']) < 2:
-           self.counter += 1
-           if self.counter >= 30:
-              self.counter = 0
-              # Normalize the weights to add up to 1
-              total_weight = sum(self.weights)
-              allocation_dict = {self.tickers[i]: self.weights[i] / total_weight for i in range(len(self.tickers))}
-              return TargetAllocation(allocation_dict)
-           else:
-              return None
-
-        today = datetime.strptime(str(next(iter(data['ohlcv'][-1].values()))['date']), '%Y-%m-%d %H:%M:%S')
-        yesterday = datetime.strptime(str(next(iter(data['ohlcv'][-2].values()))['date']), '%Y-%m-%d %H:%M:%S')
-        
-        if today.day == 11 or (today.day > 11 and yesterday.day < 11):
-            # Normalize the weights to add up to 1
-            total_weight = sum(self.weights)
-            allocation_dict = {self.tickers[i]: self.weights[i] / total_weight for i in range(len(self.tickers))}
-            return TargetAllocation(allocation_dict)
-        return None
+   def run(self, data):
+      today = datetime.strptime(str(next(iter(data['ohlcv'][-1].values()))['date']), '%Y-%m-%d %H:%M:%S')
+      yesterday = datetime.strptime(str(next(iter(data['ohlcv'][-2].values()))['date']), '%Y-%m-%d %H:%M:%S')
+      
+      if today.day == 13 or (today.day > 13 and yesterday.day < 13):
+         if self.equal_weighting:
+            allocation_dict = {i: 1 / len(self.tickers) for i in self.tickers}
+         else:
+            allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))}
+         return TargetAllocation(allocation_dict)
+      return None
