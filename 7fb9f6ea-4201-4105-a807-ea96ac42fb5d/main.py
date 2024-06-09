@@ -29,7 +29,7 @@ class TradingStrategy(Strategy):
     def run(self, data):
         # Check if there are at least two data points in 'ohlcv'
         if len(data['ohlcv']) < 2:
-            log(str(data['ohlcv']))
+            log(str(data))
             return None
 
         today = datetime.strptime(str(next(iter(data['ohlcv'][-1].values()))['date']), '%Y-%m-%d %H:%M:%S')
