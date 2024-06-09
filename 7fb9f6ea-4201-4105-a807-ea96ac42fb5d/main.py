@@ -34,11 +34,10 @@ class TradingStrategy(Strategy):
 
       # Iterate over tickers to find one with data
       today_data, yesterday_data = None, None
-      for ticker in self.tickers:
-         ticker_data = data['ohlcv'].get(ticker)
-         if ticker_data and len(ticker_data) >= 2:
-            today_data = ticker_data[-1]
-            yesterday_data = ticker_data[-2]
+      for ticker_data in data['ohlcv']:
+         if ticker_data['ticker'] in self.tickers and len(ticker_data['data']) >= 2:
+            today_data = ticker_data['data'][-1]
+            yesterday_data = ticker_data['data'][-2]
             break
 
       # If no data found for any tickers, return None
