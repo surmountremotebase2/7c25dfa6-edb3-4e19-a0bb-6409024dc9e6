@@ -33,6 +33,7 @@ class TradingStrategy(Strategy):
              return None
 
       # Iterate over tickers to find one with data
+      log(str(data))
       today_data, yesterday_data = None, None
       for ticker_data in data['ohlcv']:
          if ticker_data['ticker'] in self.tickers and len(ticker_data['data']) >= 2:
