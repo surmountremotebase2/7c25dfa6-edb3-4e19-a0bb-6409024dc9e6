@@ -45,8 +45,8 @@ class TradingStrategy(Strategy):
          return None
 
       # Parse dates
-      today = datetime.strptime(today_data['date'], '%Y-%m-%d %H:%M:%S')
-      yesterday = datetime.strptime(yesterday_data['date'], '%Y-%m-%d %H:%M:%S')
+      today = datetime.strptime(today_data, '%Y-%m-%d %H:%M:%S')
+      yesterday = datetime.strptime(yesterday_data, '%Y-%m-%d %H:%M:%S')
       
       if today.day == 17 or (today.day > 17 and yesterday.day < 17):
          if self.equal_weighting: 
