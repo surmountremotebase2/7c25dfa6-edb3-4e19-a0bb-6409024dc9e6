@@ -37,8 +37,8 @@ class TradingStrategy(Strategy):
       today_data, yesterday_data = None, None
       for ticker_data in data['ohlcv'][-2]:
          if data['ohlcv'][-2][ticker_data]['date']:
-            today_data = ticker_data['data'][-1]
-            yesterday_data = ticker_data['data'][-2]
+            today_data = data['ohlcv'][-1][ticker_data]['date']
+            yesterday_data = data['ohlcv'][-2][ticker_data]['date']
             break
 
       # If no data found for any tickers, return None
