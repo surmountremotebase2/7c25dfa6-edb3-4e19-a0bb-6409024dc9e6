@@ -20,15 +20,16 @@ class TradingStrategy(Strategy):
 
    def run(self, data):
       if len(data['ohlcv']) < 1:
-          self.counter += 1
-          if self.counter >= 30:
-              self.counter = 0
-              if self.equal_weighting: 
-                allocation_dict = {i: 1/len(self.tickers) for i in self.tickers}
-              else:
-                allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))} 
-          else:
-              return None
+         log("Here")
+         self.counter += 1
+         if self.counter >= 30:
+            self.counter = 0
+            if self.equal_weighting: 
+               allocation_dict = {i: 1/len(self.tickers) for i in self.tickers}
+             else:
+               allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))} 
+         else:
+             return None
 
       today = datetime.strptime(str(next(iter(data['ohlcv'][-1].values()))['date']), '%Y-%m-%d %H:%M:%S')
       yesterday = datetime.strptime(str(next(iter(data['ohlcv'][-2].values()))['date']), '%Y-%m-%d %H:%M:%S')
