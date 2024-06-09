@@ -19,7 +19,7 @@ class TradingStrategy(Strategy):
       return self.tickers
 
    def run(self, data):
-      if len(data['ohlcv']) < 2:
+      if len(data['ohlcv']) < 1:
           self.counter += 1
           if self.counter >= 30:
               self.counter = 0
