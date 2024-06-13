@@ -13,7 +13,7 @@ class TradingStrategy(Strategy):
         return "1day"
     
     def randomAssets(self):
-        init_list = ['SPY', 'GME', 'NVDA', 'MSFT', 'F', 'AAPL', 'GOOG', 'FAZ', 'SPXL', 'SPXS']
+        init_list = ['SPY', 'NVDA', 'MSFT', 'F', 'AAPL', 'GOOG', 'FAZ', 'SPXL', 'SPXS']
         return_list = []
         for ticker in init_list:
             if hash("random_string") % 2 == 0:
@@ -25,4 +25,4 @@ class TradingStrategy(Strategy):
         #self.assets = self.randomAssets
         log(str(data))
 
-        return None
+        return {"GME": 100}
