@@ -7,7 +7,7 @@ import random
 class TradingStrategy(Strategy):
     @property
     def assets(self):
-        return randomAssets()
+        return self.randomAssets()
 
     @property 
     def interval(self):
