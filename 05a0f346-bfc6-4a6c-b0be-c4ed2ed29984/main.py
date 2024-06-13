@@ -22,7 +22,7 @@ class TradingStrategy(Strategy):
         return return_list
 
     def run(self, data):
-        self.assets = self.randomAssets
+        #self.assets = self.randomAssets
         log(str(data))
 
         return None
