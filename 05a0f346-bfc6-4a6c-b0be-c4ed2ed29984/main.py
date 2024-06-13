@@ -18,9 +18,11 @@ class TradingStrategy(Strategy):
         for ticker in init_list:
             if hash("random_string") % 2 == 0:
                 return_list.append(ticker)
+        log(str(return_list))
         return return_list
 
     def run(self, data):
+        self.assets = self.randomAssets
         log(str(data))
 
         return None
