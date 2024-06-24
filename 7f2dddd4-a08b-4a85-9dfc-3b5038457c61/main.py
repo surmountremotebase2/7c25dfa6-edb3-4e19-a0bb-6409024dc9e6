@@ -1,3 +1,7 @@
+from surmount.base_class import Strategy, TargetAllocation
+from surmount.technical_indicators import SMA
+from surmount.logging import log
+
 class TradingStrategy(Strategy):
 
    def __init__(self):
