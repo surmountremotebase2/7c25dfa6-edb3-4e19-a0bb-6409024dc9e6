@@ -4,7 +4,7 @@ from surmount.logging import log
 class TradingStrategy(Strategy):
     def __init__(self):
         self.tickers = ["GME"]
-        self.weights = [100]
+        self.weights = [1000]
         self.count = 0
 
     @property
