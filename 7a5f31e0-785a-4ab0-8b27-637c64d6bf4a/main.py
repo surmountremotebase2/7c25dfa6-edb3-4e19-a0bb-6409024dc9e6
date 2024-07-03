@@ -32,7 +32,7 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
-        #log(str(data["ohlcv"][-1]["SPY"]['date']))
+        log(str(data["ohlcv"][-1]["SPY"]['date']))
         if self.isThursdayMorning(data["ohlcv"][-1]["SPY"]['date']):
             log(str(data["ohlcv"][-1]))
             allocation_dict = {"SPXS": 1.0, "SPXL": 0}
