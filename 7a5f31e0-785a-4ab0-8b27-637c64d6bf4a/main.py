@@ -37,7 +37,7 @@ class TradingStrategy(Strategy):
             log(str(data["ohlcv"][-1]))
             allocation_dict = {"SPXS": 1.0, "SPXL": 0}
         else:
-            allocation_dict = {}
+            allocation_dict = {"SPY": 0}
 
         '''if sma_SPXL[-1] < sma_SPY[-1]:
             #log("SPXL underperforming SPY, buying SPXL.")
