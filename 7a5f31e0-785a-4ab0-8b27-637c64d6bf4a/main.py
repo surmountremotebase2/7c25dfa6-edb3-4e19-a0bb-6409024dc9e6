@@ -1,6 +1,9 @@
 from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import SMA
 from surmount.logging import log
+
+from datetime import datetime, time
+
 import pandas as pd 
 import numpy as np 
 
@@ -15,9 +18,25 @@ class TradingStrategy(Strategy):
         # The data interval desired for the strategy. Daily in this case.
         return "1hour"
 
+    def isThursdayMorning(date_string):
+        date_format = "%Y-%m-%d %H:%M:%S"
+        native_datetime = datetime.strptime(date_string, date_format)
+
+        is_thursday = native_datetime.weekday() == 3
+
+        start_time = time(9, 30)
+        end_time = time(10, 30)
+        is_time = start_time <= native_datetime.time() <= end_time
+
+        return is_thursday and is_time
+
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
-        log(str(data["ohlcv"][-1]))
+        if isThursdayMorning(data["ohlcv"][-1]):
+            log(str(data["ohlcv"][-1]))
+            allocation_dict = {"SPXS": 1.0, "SPXL": 0}
+        else:
+            return {}
 
         '''if sma_SPXL[-1] < sma_SPY[-1]:
             #log("SPXL underperforming SPY, buying SPXL.")
