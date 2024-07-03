@@ -17,7 +17,7 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
-        log(str(data[-1]))
+        log(str(data["ohlcv"][-1]))
 
         '''if sma_SPXL[-1] < sma_SPY[-1]:
             #log("SPXL underperforming SPY, buying SPXL.")
