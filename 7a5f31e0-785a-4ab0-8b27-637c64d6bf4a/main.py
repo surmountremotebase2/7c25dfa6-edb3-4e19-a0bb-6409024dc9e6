@@ -24,8 +24,8 @@ class TradingStrategy(Strategy):
 
         is_thursday = native_datetime.weekday() == 3
 
-        start_time = time(9, 30)
-        end_time = time(10, 30)
+        start_time = time(2, 30)
+        end_time = time(3, 30)
         is_time = start_time <= native_datetime.time() <= end_time
 
         return is_thursday and is_time
