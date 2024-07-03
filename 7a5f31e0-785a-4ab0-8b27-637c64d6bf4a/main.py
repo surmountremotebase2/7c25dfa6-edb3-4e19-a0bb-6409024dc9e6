@@ -18,7 +18,7 @@ class TradingStrategy(Strategy):
         # The data interval desired for the strategy. Daily in this case.
         return "1hour"
 
-    def isThursdayMorning(date_string):
+    def isThursdayMorning(self, date_string):
         date_format = "%Y-%m-%d %H:%M:%S"
         native_datetime = datetime.strptime(date_string, date_format)
 
@@ -32,7 +32,7 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
-        if isThursdayMorning(data["ohlcv"][-1]):
+        if self.isThursdayMorning(data["ohlcv"][-1]):
             log(str(data["ohlcv"][-1]))
             allocation_dict = {"SPXS": 1.0, "SPXL": 0}
         else:
