@@ -64,7 +64,7 @@ class TradingStrategy(Strategy):
         elif self.isFridayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
             log("Friday afternoon - going long")
             allocation_dict = {"SPXS": 0, "SPXL": 1}
-        elif self.IsMondayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
+        elif self.isMondayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
             log("Monday Afternoon - exiting")
             allocation_dict = {"SPXS": 0, "SPXL": 0}
         else:
