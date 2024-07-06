@@ -46,13 +46,13 @@ class TradingStrategy(Strategy):
         date_format = "%Y-%m-%d %H:%M:%S"
         native_datetime = datetime.strptime(date_string, date_format)
 
-        is_friday = native_datetime.weekday() == 0
+        is_monday = native_datetime.weekday() == 0
 
         start_time = time(2, 30)
         end_time = time(3, 30)
         is_time = start_time <= native_datetime.time() <= end_time
 
-        return is_friday and is_time
+        return is_monday and is_time
 
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
