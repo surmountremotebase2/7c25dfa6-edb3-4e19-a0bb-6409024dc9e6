@@ -56,7 +56,7 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
-        log(str(data["ohlcv"][-1]["SPY"]['date']))
+        #log(str(data["ohlcv"][-1]["SPY"]['date']))
         if self.isThursdayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
             #log(str(data["ohlcv"][-1]))
             log("Thursday Afternoon - going short")
