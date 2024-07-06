@@ -60,7 +60,7 @@ class TradingStrategy(Strategy):
         if self.isThursdayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
             #log(str(data["ohlcv"][-1]))
             log("Thursday Afternoon - going short")
-            allocation_dict = {"SPXS": 1.0, "SPXL": 0}
+            allocation_dict = {"SPXS": 1, "SPXL": 0}
         elif self.isFridayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
             log("Friday afternoon - going long")
             allocation_dict = {"SPXS": 0, "SPXL": 1}
@@ -70,21 +70,6 @@ class TradingStrategy(Strategy):
         else:
             allocation_dict = {"SPY": 0}
 
-        '''
-        if sma_SPXL[-1] < sma_SPY[-1]:
-            #log("SPXL underperforming SPY, buying SPXL.")
-            allocation_dict = {"SPXL": 1.0} # Put 100% in SPXL
-        else:
-            #log("SPXL not underperforming or outperforming SPY, liquidating SPXL.")
-            allocation_dict = {"SPXL": 0.0} # Liquidate all SPXL
-
-        if spxl_delta < spy_delta:
-            #log("SPXL Underperforming spy, buying SPXL.")
-            allocation_dict = {"SPXL": 0.00}
-        else:
-            #log("SPXL caught up - liquidating SPXL.")
-            allocation_dict = {"SPXL": 0.0}
-        '''
         
         if not allocation_dict:
             allocation_dict = TargetAllocation({})
