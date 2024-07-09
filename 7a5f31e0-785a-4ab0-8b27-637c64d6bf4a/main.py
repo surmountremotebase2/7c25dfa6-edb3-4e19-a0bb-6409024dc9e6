@@ -31,6 +31,7 @@ class TradingStrategy(Strategy):
         #log("Thursday Check: ")
         #log(str(is_thursday))
         #log(str(is_time))
+        log(str(native_datetime))
 
         return is_thursday and is_time
     
@@ -47,6 +48,7 @@ class TradingStrategy(Strategy):
         #log("Friday Check: ")
         #log(str(is_friday))
         #log(str(is_time))
+        log(str(native_datetime))
 
         return is_friday and is_time
     
@@ -63,6 +65,7 @@ class TradingStrategy(Strategy):
         #log("Monday Check: ")
         #log(str(is_monday))
         #log(str(is_time))
+        log(str(native_datetime))
 
         return is_monday and is_time
 
