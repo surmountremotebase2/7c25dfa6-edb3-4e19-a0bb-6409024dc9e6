@@ -24,7 +24,7 @@ class TradingStrategy(Strategy):
 
         is_thursday = native_datetime.weekday() == 3
 
-        start_time = time(2, 30)
+        start_time = time(1, 30)
         end_time = time(3, 30)
         is_time = start_time <= native_datetime.time() <= end_time
 
@@ -40,7 +40,7 @@ class TradingStrategy(Strategy):
 
         is_friday = native_datetime.weekday() == 4
 
-        start_time = time(2, 30)
+        start_time = time(1, 30)
         end_time = time(3, 30)
         is_time = start_time <= native_datetime.time() <= end_time
 
@@ -56,7 +56,7 @@ class TradingStrategy(Strategy):
 
         is_monday = native_datetime.weekday() == 0
 
-        start_time = time(2, 30)
+        start_time = time(1, 30)
         end_time = time(3, 30)
         is_time = start_time <= native_datetime.time() <= end_time
 
