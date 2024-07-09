@@ -28,9 +28,9 @@ class TradingStrategy(Strategy):
         end_time = time(3, 30)
         is_time = start_time <= native_datetime.time() <= end_time
 
-        log("Thursday Check: ")
-        log(str(is_thursday))
-        log(str(is_time))
+        #log("Thursday Check: ")
+        #log(str(is_thursday))
+        #log(str(is_time))
 
         return is_thursday and is_time
     
@@ -44,9 +44,9 @@ class TradingStrategy(Strategy):
         end_time = time(3, 30)
         is_time = start_time <= native_datetime.time() <= end_time
 
-        log("Friday Check: ")
-        log(str(is_friday))
-        log(str(is_time))
+        #log("Friday Check: ")
+        #log(str(is_friday))
+        #log(str(is_time))
 
         return is_friday and is_time
     
@@ -60,9 +60,9 @@ class TradingStrategy(Strategy):
         end_time = time(3, 30)
         is_time = start_time <= native_datetime.time() <= end_time
 
-        log("Monday Check: ")
-        log(str(is_monday))
-        log(str(is_time))
+        #log("Monday Check: ")
+        #log(str(is_monday))
+        #log(str(is_time))
 
         return is_monday and is_time
 
