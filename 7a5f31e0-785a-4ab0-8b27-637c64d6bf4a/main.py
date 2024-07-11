@@ -22,7 +22,7 @@ class TradingStrategy(Strategy):
         date_format = "%Y-%m-%d %H:%M:%S"
         native_datetime = datetime.strptime(date_string, date_format)
 
-        is_thursday = native_datetime.weekday() == 3
+        is_thursday = native_datetime.weekday() == 2
 
         start_time = time(14, 30)
         end_time = time(15, 30)
