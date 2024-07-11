@@ -70,7 +70,7 @@ class TradingStrategy(Strategy):
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
         #log(str(data["ohlcv"][-1]["SPY"]['date']))
-        if self.isThursdayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
+        '''if self.isThursdayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
             #log(str(data["ohlcv"][-1]))
             #log("Thursday Afternoon - going short")
             allocation_dict = {"SPXS": 0.75, "SPXL": 0.25}
@@ -80,6 +80,13 @@ class TradingStrategy(Strategy):
         elif self.isMondayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
             #log("Monday Afternoon - exiting")
             allocation_dict = {"SPXS": 0, "SPXL": 0}
+        else:
+            allocation_dict = {"SPY": 0}'''
+        
+        if self.isFridayAfternoon(data["ohlcv"][-1]["SPY"]['date']) and data["ohlcv"][-1]["SPY"]["open"] > data["ohlcv"][-1]["SPY"]["close"]:
+            allocation_dict = {"SPXL": 1}
+        elif self.isMondayAfternoon(data["ohlcv"][-1]["SPY"]['date']):
+            allocation_dict = {"SPXL": 0}
         else:
             allocation_dict = {"SPY": 0}
 
