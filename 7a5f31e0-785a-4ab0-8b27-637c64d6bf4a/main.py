@@ -11,7 +11,7 @@ class TradingStrategy(Strategy):
     @property
     def assets(self):
         # Define the assets to be used in the strategy
-        return ["SPY", "SPXS"]
+        return ["SPXL", "SPY", "SPXS"]
 
     @property
     def interval(self):
