@@ -15,5 +15,5 @@ class TradingStrategy(Strategy):
         return "1day"
 
     def run(self, data):
-        uso_allocation = 0.9999001
+        uso_allocation = 1
         return TargetAllocation({self.ticker: uso_allocation})
