@@ -26,7 +26,7 @@ class TradingStrategy(Strategy):
 
         fmp_client = fmp()
         newData = fmp_client.get_shares_outstanding("AAPL")
-        log.info(str(newData))
+        log(str(newData))
         
         # Ensure that we have enough data points to proceed
         if not sma_SPXL or not sma_SPY or not sma_SPXS or len(sma_SPXL) < 5 or len(sma_SPY) < 5 or len(sma_SPXS) < 5:
