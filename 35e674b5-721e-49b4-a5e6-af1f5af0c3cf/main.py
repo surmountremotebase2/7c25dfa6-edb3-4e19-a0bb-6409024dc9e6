@@ -1,5 +1,6 @@
 from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import SMA
+from surmount.data_client import get_shares_outstanding
 from surmount.logging import log
 import pandas as pd 
 import numpy as np 
@@ -22,6 +23,9 @@ class TradingStrategy(Strategy):
         sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
         sma_SPXS = SMA("SPXS", data["ohlcv"], length=5)
+
+        newData = get_shares_outstanding("AAPL")
+        logging.info(str(newData))
         
         # Ensure that we have enough data points to proceed
         if not sma_SPXL or not sma_SPY or not sma_SPXS or len(sma_SPXL) < 5 or len(sma_SPY) < 5 or len(sma_SPXS) < 5:
