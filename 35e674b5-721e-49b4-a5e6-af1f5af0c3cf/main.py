@@ -24,7 +24,7 @@ class TradingStrategy(Strategy):
         sma_SPY = SMA("SPY", data["ohlcv"], length=5)
         sma_SPXS = SMA("SPXS", data["ohlcv"], length=5)
 
-        newData = fmp.get_shares_outstanding("AAPL")
+        newData = get_shares_outstanding("AAPL")
         logging.info(str(newData))
         
         # Ensure that we have enough data points to proceed
