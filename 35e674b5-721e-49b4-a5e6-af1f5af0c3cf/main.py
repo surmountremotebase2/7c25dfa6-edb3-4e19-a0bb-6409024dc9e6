@@ -1,6 +1,6 @@
 from surmount.base_class import Strategy, TargetAllocation
 from surmount.technical_indicators import SMA
-from surmount.data_client import get_shares_outstanding
+from surmount.data_client import _FMPClient
 from surmount.logging import log
 import pandas as pd 
 import numpy as np 
