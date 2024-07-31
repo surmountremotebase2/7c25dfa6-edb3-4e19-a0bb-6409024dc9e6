@@ -29,7 +29,7 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         self.count += 7
-        if count % 7 == 0:
+        if self.count % 7 == 0:
             allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))}
             return TargetAllocation(allocation_dict)
         return None
