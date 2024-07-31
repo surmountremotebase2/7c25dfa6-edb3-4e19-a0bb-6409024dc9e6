@@ -18,7 +18,7 @@ class TradingStrategy(Strategy):
         return self.tickers
 
     def run(self, data):
-        if data['ohlcv'][-1]:
+        if data['ohlcv']:
             today = datetime.strptime(str(next(iter(data['ohlcv'][-1].values()))['date']), '%Y-%m-%d %H:%M:%S')
             yesterday = datetime.strptime(str(next(iter(data['ohlcv'][-2].values()))['date']), '%Y-%m-%d %H:%M:%S')
             
