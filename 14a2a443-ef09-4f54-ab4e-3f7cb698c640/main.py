@@ -17,6 +17,7 @@ class TradingStrategy(Strategy):
             0.025, 0.025, 0.02, 0.02, 0.02, 0.02, 0.02, 0.015, 0.015,
             0.015, 0.015, 0.015, 0.015
         ]
+        self.count = 0
 
     @property
     def interval(self):
@@ -27,11 +28,8 @@ class TradingStrategy(Strategy):
         return self.tickers
 
     def run(self, data):
-        if data['ohlcv']:
-            today = datetime.strptime(str(next(iter(data['ohlcv'][-1].values()))['date']), '%Y-%m-%d %H:%M:%S')
-            yesterday = datetime.strptime(str(next(iter(data['ohlcv'][-2].values()))['date']), '%Y-%m-%d %H:%M:%S')
-            
-            if today.day == 7 or (today.day > 7 and yesterday.day < 7):
-                allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))}
-                return TargetAllocation(allocation_dict)
+        
+        if count % 7 == 0:
+            allocation_dict = {self.tickers[i]: self.weights[i] for i in range(len(self.tickers))}
+            return TargetAllocation(allocation_dict)
         return None
