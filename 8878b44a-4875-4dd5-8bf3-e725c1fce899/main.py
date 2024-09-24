@@ -8,7 +8,7 @@ class TradingStrategy(Strategy):
     @property
     def assets(self):
         # Define the assets to be used in the strategy
-        return ["BTC"]
+        return ["BTCUSD"]
 
     @property
     def interval(self):
@@ -16,7 +16,7 @@ class TradingStrategy(Strategy):
         return "4hour"
 
     def run(self, data):
-        allocation_dict = {"BTC": 1.0}
+        allocation_dict = {"BTCUSD": 1.0}
         
         if not allocation_dict:
             allocation_dict = TargetAllocation({})
