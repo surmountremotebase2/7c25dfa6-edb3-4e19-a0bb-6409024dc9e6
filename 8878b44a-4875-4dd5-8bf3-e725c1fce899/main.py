@@ -24,8 +24,11 @@ class TradingStrategy(Strategy):
         seven_sma = SMA("BTCUSD", data["ohlcv"], length=7)
         ten_sma = SMA("BTCUSD", data["ohlcv"], length=10)
 
-        if three_sma[-1] > five_sma[-1]:
-            allocation_dict = {"BTCUSD": 1.0}
+        if three_sma[-1] > three_sma[-2]:
+            if three_sma[-1] > five_sma[-1]:
+                allocation_dict = {"BTCUSD": 1.0}
+            else:
+                allocation_dict = {"BTCUSD": 0.0}
         else:
             allocation_dict = {"BTCUSD": 0.0}
         
