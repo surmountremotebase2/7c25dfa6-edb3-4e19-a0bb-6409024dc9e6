@@ -42,7 +42,7 @@ class TradingStrategy(Strategy):
         return TargetAllocation(allocation_dict)'''
     
     def run(self, data):
-        allocation_dict{"BTCUSD": 1.0}
+        allocation_dict = {"BTCUSD": 1.0}
         return TargetAllocation(allocation_dict)
         # Calculate SMAs
         three_sma = SMA("BTCUSD", data["ohlcv"], length=5)
