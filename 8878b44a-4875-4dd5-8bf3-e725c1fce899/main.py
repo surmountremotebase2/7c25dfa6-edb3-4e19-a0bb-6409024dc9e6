@@ -13,10 +13,21 @@ class TradingStrategy(Strategy):
     @property
     def interval(self):
         # The data interval desired for the strategy. Daily in this case.
-        return "4hour"
+        return "1hour"
 
     def run(self, data):
-        allocation_dict = {"BTCUSD": 1.0}
+        #allocation_dict = {"BTCUSD": 1.0}
+
+        # Calculate the hitorical SMA's for BTCUSD
+        3_sma = SMA("BTCUSD", data["ohlcv"], length=3)
+        5_sma = SMA("BTCUSD", data["ohlcv"], length=5)
+        7_sma = SMA("BTCUSD", data["ohlcv"], length=7)
+        10_sma = SMA("BTCUSD", data["ohlcv"], length=10)
+
+        if 3_sma > 5_sma:
+            allocation_dict = {"BTCUSD": 1.0}
+        else:
+            allocation_dict = {"BTCUSD": 0.0}
         
         if not allocation_dict:
             allocation_dict = TargetAllocation({})
