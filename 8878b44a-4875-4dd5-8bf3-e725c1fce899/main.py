@@ -19,12 +19,12 @@ class TradingStrategy(Strategy):
         #allocation_dict = {"BTCUSD": 1.0}
 
         # Calculate the hitorical SMA's for BTCUSD
-        3_sma = SMA("BTCUSD", data["ohlcv"], length=3)
-        5_sma = SMA("BTCUSD", data["ohlcv"], length=5)
-        7_sma = SMA("BTCUSD", data["ohlcv"], length=7)
-        10_sma = SMA("BTCUSD", data["ohlcv"], length=10)
+        three_sma = SMA("BTCUSD", data["ohlcv"], length=3)
+        five_sma = SMA("BTCUSD", data["ohlcv"], length=5)
+        seven_sma = SMA("BTCUSD", data["ohlcv"], length=7)
+        ten_sma = SMA("BTCUSD", data["ohlcv"], length=10)
 
-        if 3_sma > 5_sma:
+        if three_sma > five_sma:
             allocation_dict = {"BTCUSD": 1.0}
         else:
             allocation_dict = {"BTCUSD": 0.0}
