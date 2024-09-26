@@ -99,5 +99,3 @@ class TradingStrategy(Strategy):
 
             # Return the target allocation based on our logic
             return TargetAllocation(allocation_dict)
-
-        
