@@ -14,26 +14,29 @@ class TradingStrategy(Strategy):
     def interval(self):
         # The data interval desired for the strategy. Daily in this case.
         return "4hour"
-
+    
     def run(self, data):
-        #allocation_dict = {"BTCUSD": 1.0}
-
-        # Calculate the hitorical SMA's for BTCUSD
+        # Calculate the historical SMAs for BTCUSD
         three_sma = SMA("BTCUSD", data["ohlcv"], length=3)
         five_sma = SMA("BTCUSD", data["ohlcv"], length=5)
         seven_sma = SMA("BTCUSD", data["ohlcv"], length=7)
         ten_sma = SMA("BTCUSD", data["ohlcv"], length=10)
-
-        if three_sma[-1] > three_sma[-2]:
-            if three_sma[-1] > five_sma[-1]:
-                allocation_dict = {"BTCUSD": 1.0}
-            else:
-                allocation_dict = {"BTCUSD": 0.0}
+        
+        # Set the number of periods to confirm the upward trend
+        N = 3  # Number of consecutive increases required
+        
+        # Check if the 3-period SMA has been increasing for the last N periods
+        upward_trend = all([three_sma[-i] > three_sma[-i-1] for i in range(1, N+1)])
+        
+        # Check if moving averages are aligned (shorter-term SMAs above longer-term SMAs)
+        ma_alignment = three_sma[-1] > five_sma[-1] > seven_sma[-1] > ten_sma[-1]
+        
+        if upward_trend and ma_alignment:
+            allocation_dict = {"BTCUSD": 1.0}
         else:
             allocation_dict = {"BTCUSD": 0.0}
         
         if not allocation_dict:
             allocation_dict = TargetAllocation({})
 
-        # Return the target allocation based on our logic
         return TargetAllocation(allocation_dict)
