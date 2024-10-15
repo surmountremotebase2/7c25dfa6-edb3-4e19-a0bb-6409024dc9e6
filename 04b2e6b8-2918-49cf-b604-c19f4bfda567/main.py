@@ -8,12 +8,12 @@ class TradingStrategy(Strategy):
     @property
     def assets(self):
         # Define the assets to be used in the strategy
-        return ["SPXL", "SPY", "SPXS"]
+        return ["SPXL", "SPY", "SPXS", "DPG"]
 
     @property
     def interval(self):
         # The data interval desired for the strategy. Daily in this case.
-        return "4hour"
+        return "1min"
 
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
