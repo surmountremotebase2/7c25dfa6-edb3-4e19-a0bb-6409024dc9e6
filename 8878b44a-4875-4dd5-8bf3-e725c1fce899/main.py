@@ -13,7 +13,7 @@ class TradingStrategy(Strategy):
     @property
     def interval(self):
         # The data interval desired for the strategy. Daily in this case.
-        return "4hour"
+        return "1hour"
     
     '''def run(self, data):
         # Calculate the historical SMAs for BTCUSD
