@@ -8,7 +8,7 @@ class TradingStrategy(Strategy):
     @property
     def assets(self):
         # Define the assets to be used in the strategy
-        return ["BTCUSD"]
+        return ["BTC-USD"]
 
     @property
     def interval(self):
