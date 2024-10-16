@@ -56,7 +56,7 @@ class TradingStrategy(Strategy):
             volaT = np.percentile(mrktData['vol_current'], volaT_percentile)
             volaH = np.percentile(mrktData['vol_current'], volaH_percentile)
             mrktClose = mrktData['close'].iloc[-1]
-            mrktEMA = EMA(mrkt, data["ohlcv"], length=200)
+            mrktEMA = EMA(mrkt, data["ohlcv"], length=30)
 
             # Volatility check and risk-off allocation logic
             if mrktData['vol_current'].iloc[-1] > mrktData['vol_future'].iloc[-1] and mrktData['vol_current'].iloc[-1] > volaT:
