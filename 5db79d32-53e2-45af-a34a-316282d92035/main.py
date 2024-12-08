@@ -1,93 +1,146 @@
-from surmount.base_class import Strategy, TargetAllocation
-from surmount.technical_indicators import SMA, EMA
-from surmount.logging import log
+from typing import Dict, Tuple, List
 import pandas as pd
 import numpy as np
 
+from surmount.base_class import Strategy, TargetAllocation
+from surmount.technical_indicators import SMA, EMA
+from surmount.logging import log
+
 class TradingStrategy(Strategy):
     def __init__(self):
-        self.count = 0  # Initialize the count for the risk-off holding period
+        # Count is used as a "cool-down" period after triggering risk-off behavior.
+        self.count = 0
     
     @property
-    def assets(self):
-        # Define the assets to be used in the strategy
+    def assets(self) -> List[str]:
+        """Assets to be traded by this strategy."""
         return ["BTC-USD"]
 
     @property
-    def interval(self):
-        # The data interval desired for the strategy. Daily in this case.
+    def interval(self) -> str:
+        """Data interval used by the strategy."""
         return "1hour"
 
-    def volatility_check(self, mrkt, data, INTERVAL_WINDOW=60, n_future=20, volaT_percentile=55, volaH_percentile=80):
+    def volatility_check(
+        self,
+        market: str,
+        data: Dict,
+        INTERVAL_WINDOW: int = 60,
+        n_future: int = 20,
+        volaT_percentile: float = 55.0,
+        volaH_percentile: float = 80.0
+    ) -> Tuple[Dict[str, float], int]:
         """
-        Perform a volatility check for market conditions and return an updated allocation based on risk-off behavior.
+        Perform a volatility check and determine if the strategy should go risk-off.
+
+        Parameters
+        ----------
+        market : str
+            Market symbol (e.g., "BTC-USD").
+        data : dict
+            Data dictionary with OHLCV values.
+        INTERVAL_WINDOW : int
+            Rolling window size for volatility calculation.
+        n_future : int
+            Number of future periods used for forward-looking volatility.
+        volaT_percentile : float
+            Percentile for the lower volatility threshold.
+        volaH_percentile : float
+            Percentile for the higher volatility threshold.
+
+        Returns
+        -------
+        allocation_dict : Dict[str, float]
+            A dictionary of allocations by ticker.
+        count : int
+            Updated count for future risk-off periods.
+        """
+        # Extract close prices for the given market
+        closes = [entry[market]['close'] for entry in data['ohlcv'] if market in entry]
+        mrkt_df = pd.DataFrame(closes, columns=['close'])
         
-        Parameters:
-            - mrkt: Market symbol (e.g., "BTC-USD")
-            - data: Data dictionary with OHLCV values
-            - INTERVAL_WINDOW: Rolling window size for volatility calculation
-            - n_future: Number of future periods for forward-looking volatility
-            - volaT_percentile: Percentile for lower volatility threshold
-            - volaH_percentile: Percentile for higher volatility threshold
+        # Compute log returns and fill any initial NaNs with 0
+        mrkt_df['log_returns'] = np.log(mrkt_df['close'] / mrkt_df['close'].shift(1))
+        mrkt_df['log_returns'].fillna(0, inplace=True)
 
-        Returns:
-            - allocation_dict: Dictionary of ticker allocations based on volatility conditions
-            - count: Updated count for future decisions
-        """
-        mrktData = [entry[mrkt]['close'] for entry in data['ohlcv'] if mrkt in entry]
-        mrktData = pd.DataFrame(mrktData, columns=['close'])
-        mrktData['log_returns'] = np.log(mrktData.close / mrktData.close.shift(1))
-        mrktData = mrktData.fillna(0)
+        allocation_dict = {market: 0.0}
 
-        allocation_dict = {"BTC-USD": 0.0}
+        if len(mrkt_df) <= n_future:
+            # Not enough data to perform forward-looking volatility checks
+            return allocation_dict, self.count
 
-        if len(mrktData) > n_future:
-            # Get backward-looking realized volatility
-            mrktData['vol_current'] = mrktData['log_returns'].rolling(window=INTERVAL_WINDOW).apply(
-                lambda x: np.sqrt(np.sum(x**2) / (len(x) - 1)))
-            mrktData['vol_current'] = mrktData['vol_current'].bfill()
+        # Compute current volatility (backward-looking)
+        mrkt_df['vol_current'] = (
+            mrkt_df['log_returns']
+            .rolling(window=INTERVAL_WINDOW)
+            .apply(lambda x: np.sqrt(np.sum(x**2) / (len(x) - 1)), raw=True)
+        )
+        # Backfill the initial window to avoid NaNs
+        mrkt_df['vol_current'].bfill(inplace=True)
 
-            # Get forward-looking realized volatility
-            mrktData['vol_future'] = mrktData['log_returns'].shift(n_future).fillna(0).rolling(window=INTERVAL_WINDOW).apply(
-                lambda x: np.sqrt(np.sum(x**2) / (len(x) - 1)))
-            mrktData['vol_future'] = mrktData['vol_future'].bfill()
+        # Compute future volatility (forward-looking)
+        future_shifted = mrkt_df['log_returns'].shift(n_future).fillna(0)
+        mrkt_df['vol_future'] = (
+            future_shifted
+            .rolling(window=INTERVAL_WINDOW)
+            .apply(lambda x: np.sqrt(np.sum(x**2) / (len(x) - 1)), raw=True)
+        )
+        mrkt_df['vol_future'].bfill(inplace=True)
 
-            # Calculate volatility thresholds
-            volaT = np.percentile(mrktData['vol_current'], volaT_percentile)
-            volaH = np.percentile(mrktData['vol_current'], volaH_percentile)
-            mrktClose = mrktData['close'].iloc[-1]
-            mrktEMA = EMA(mrkt, data["ohlcv"], length=30)
+        # Determine volatility thresholds
+        volaT = np.percentile(mrkt_df['vol_current'], volaT_percentile)
+        volaH = np.percentile(mrkt_df['vol_current'], volaH_percentile)
 
-            # Volatility check and risk-off allocation logic
-            if mrktData['vol_current'].iloc[-1] > mrktData['vol_future'].iloc[-1] and mrktData['vol_current'].iloc[-1] > volaT:
-                if mrktData['vol_current'].iloc[-1] > volaH:
-                    self.count = 10  # Risk-off for 10 intervals
-                else:
-                    self.count = 5   # Risk-off for 5 intervals
-                allocation_dict = {"BTC-USD": 0.0}  # Risk-off, allocate nothing
-            elif self.count < 1 and mrktClose > mrktEMA[-1]:
-                allocation_dict = {"BTC-USD": 1.0}  # Re-enter positions
+        # Extract the most recent close and EMA
+        mrkt_close = mrkt_df['close'].iloc[-1]
+        mrkt_ema = EMA(market, data["ohlcv"], length=30)
+
+        # Volatility-based risk-off logic
+        current_vol = mrkt_df['vol_current'].iloc[-1]
+        future_vol = mrkt_df['vol_future'].iloc[-1]
+
+        if current_vol > future_vol and current_vol > volaT:
+            # Market is volatile, move to risk-off mode
+            if current_vol > volaH:
+                self.count = 10  # More volatile, longer wait
+            else:
+                self.count = 5   # Less volatile, shorter wait
+            allocation_dict = {market: 0.0}
+        elif self.count < 1 and mrkt_close > mrkt_ema[-1]:
+            # Conditions allow re-entry into the market
+            allocation_dict = {market: 1.0}
 
         return allocation_dict, self.count
 
-    def run(self, data):
-        # Decrement the count for the risk-off holding period if it's active
+    def run(self, data: Dict) -> TargetAllocation:
+        """
+        Main logic to run each interval. Adjusts allocation based on volatility and SMAs.
+
+        Parameters
+        ----------
+        data : dict
+            Market OHLCV data.
+
+        Returns
+        -------
+        TargetAllocation
+            The desired allocation for each asset at this interval.
+        """
+        # Decrement the risk-off count if active
         self.count = max(0, self.count - 1)
 
-        # Run the volatility check
+        # Check volatility conditions and possibly update count
         allocation_dict, self.count = self.volatility_check("BTC-USD", data)
 
-        # If volatility check allows, proceed with the SMA logic
+        # If not in a risk-off period (count == 0), apply SMA trend logic
         if self.count == 0:
-            # Calculate the historical SMAs for BTCUSD
-            three_sma = SMA("BTC-USD", data["ohlcv"], length=3)
-            five_sma = SMA("BTC-USD", data["ohlcv"], length=5)
+            short_sma = SMA("BTC-USD", data["ohlcv"], length=3)
+            mid_sma = SMA("BTC-USD", data["ohlcv"], length=5)
 
-            # Check SMA alignment for trend confirmation
-            if three_sma[-1] > three_sma[-2] and three_sma[-1] > five_sma[-1]:
+            # If short-term SMA is rising and above the mid-term SMA, go long
+            if short_sma[-1] > short_sma[-2] and short_sma[-1] > mid_sma[-1]:
                 allocation_dict = {"BTC-USD": 1.0}
             else:
                 allocation_dict = {"BTC-USD": 0.0}
-        
-        # Return the target allocation based on our logic
+
         return TargetAllocation(allocation_dict)
