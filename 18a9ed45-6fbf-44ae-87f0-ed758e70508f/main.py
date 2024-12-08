@@ -26,7 +26,7 @@ class TradingStrategy(Strategy):
 
         # Compute MACD and RSI for SPY
         macd_SPY = MACD("SPY", data["ohlcv"], 12, 26)
-        rsi_SPY = RSI("SPY", data["ohlcv"], length=14)
+        rsi_SPY = RSI("SPY", data["ohlcv"], 14)
 
         macdh_SPY = macd_SPY['MACDh_12_26_9']
         latest_macdh = macdh_SPY[-1] if len(macdh_SPY) > 0 else 0
