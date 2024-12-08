@@ -6,7 +6,7 @@ from surmount.data import Asset
 class TradingStrategy(Strategy):
     @property
     def assets(self):
-        return ["SPXL", "SPXS", "SPY"]
+        return ["SPXL", "SPXS", "SPY", "SH"]
 
     @property
     def interval(self):
@@ -36,15 +36,12 @@ class TradingStrategy(Strategy):
         macdh_SPY = macd_SPY['MACDh_5_10_9']
 
         if macdh_SPY[-1] < -1.68:
-            allocation_dict = {"SPXS": 1, "SPXL": 0}
+            allocation_dict = {"SPXS": 0.75, "SH": 0.25, "SPXL": 0}
         else:
             if rsi_SPY[-1] < 62: 
-                allocation_dict = {"SPXS": 0, "SPXL": 1}
+                allocation_dict = {"SPXS": 0, "SPXL": 0.75, "SPY": 0.25}
             else:
                 allocation_dict = {"SPXL": 0, "SPXS": 0}
 
 
         return TargetAllocation(allocation_dict)
-
-
-
