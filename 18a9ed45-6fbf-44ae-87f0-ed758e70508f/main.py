@@ -36,12 +36,15 @@ class TradingStrategy(Strategy):
         macdh_SPY = macd_SPY['MACDh_5_10_9']
 
         if macdh_SPY[-1] < -1.68:
-            allocation_dict = {"SPXS": 100, "SPXL": 0}
+            allocation_dict = {"SPXS": 1, "SPXL": 0}
         else:
             if rsi_SPY[-1] < 62: 
-                allocation_dict = {"SPXS": 0, "SPXL": 100}
+                allocation_dict = {"SPXS": 0, "SPXL": 1}
             else:
                 allocation_dict = {"SPXL": 0, "SPXS": 0}
 
 
         return TargetAllocation(allocation_dict)
+
+
+
