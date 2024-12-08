@@ -5,6 +5,9 @@ import pandas as pd
 import numpy as np
 
 class TradingStrategy(Strategy):
+    
+    print_flag = 1
+    
     @property
     def assets(self):
         return ["SPXL", "SPXS", "SPY"]
@@ -14,6 +17,10 @@ class TradingStrategy(Strategy):
         return "1day"
 
     def run(self, data):
+        if self.print_flag == 1:
+            log(data)
+            self.print_flag = 0
+
         # Extract OHLCV data for SPY
         spy_data = data["ohlcv"]["SPY"]
         
