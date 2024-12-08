@@ -25,7 +25,7 @@ class TradingStrategy(Strategy):
         vol_threshold = 5.0  # Adjust this based on typical ATR values for SPY
 
         # Compute MACD and RSI for SPY
-        macd_SPY = MACD("SPY", data["ohlcv"], fast=12, slow=26, signal=9)
+        macd_SPY = MACD("SPY", data["ohlcv"], 12, 26)
         rsi_SPY = RSI("SPY", data["ohlcv"], length=14)
 
         macdh_SPY = macd_SPY['MACDh_12_26_9']
