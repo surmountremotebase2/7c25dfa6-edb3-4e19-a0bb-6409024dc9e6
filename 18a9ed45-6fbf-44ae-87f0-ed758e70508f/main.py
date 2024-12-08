@@ -1,56 +1,95 @@
 from surmount.base_class import Strategy, TargetAllocation
-from surmount.technical_indicators import SMA, MACD, RSI  # We'll use the Simple Moving Average (SMA)
+from surmount.technical_indicators import SMA, MACD, RSI
 from surmount.logging import log
-from surmount.data import Asset
+import pandas as pd
+import numpy as np
 
 class TradingStrategy(Strategy):
     @property
     def assets(self):
-        return ["SPXL", "SPXS", "SPY", "SH"]
+        return ["SPXL", "SPXS", "SPY"]
 
     @property
     def interval(self):
         return "1day"
 
     def run(self, data):
-        macd_SPY = MACD("SPY", data["ohlcv"], 5, 10)
-        sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
-        sma_SPY = SMA("SPY", data["ohlcv"], length=5)
-        sma_SPXS = SMA("SPXS", data["ohlcv"], length=5)
+        # Extract OHLCV data for SPY
+        spy_data = data["ohlcv"]["SPY"]
         
-        # Add longer-term SMA for trend confirmation
-        sma_SPY_long = SMA("SPY", data["ohlcv"], length=20)
-        
+        # Compute returns and rolling volatility (14-day std of returns)
+        returns = spy_data["close"].pct_change()
+        vol_window = 14
+        vol = returns.rolling(vol_window).std().dropna()
+        current_vol = vol.iloc[-1] if len(vol) > 0 else 0.0
+
+        # Volatility threshold (tweak this as needed)
+        # For example, a threshold of 2% daily std: 
+        vol_threshold = 0.02
+
+        # Compute MACD and RSI for SPY as signals
+        macd_SPY = MACD("SPY", data["ohlcv"], fast=12, slow=26, signal=9)  # standard MACD parameters
         rsi_SPY = RSI("SPY", data["ohlcv"], length=14)
-        rsi_SPXL = RSI("SPXL", data["ohlcv"], length=14)
 
-        # Calculate trends
-        spy_recents = sma_SPY[-3:]
-        spy_differences = [spy_recents[i+1] - spy_recents[i] for i in range(len(spy_recents)-1)]
-        upward_trend = sum(d > 0 for d in spy_differences)
-        downward_trend = sum(d < 0 for d in spy_differences)
+        # We will determine market regime based on MACD histogram and RSI
+        macdh_SPY = macd_SPY['MACDh_12_26_9']
+        latest_macdh = macdh_SPY[-1] if len(macdh_SPY) > 0 else 0
+        latest_rsi_spy = rsi_SPY[-1] if len(rsi_SPY) > 0 else 50
 
-        macdh_SPY = macd_SPY['MACDh_5_10_9']
-        
-        # Position sizing based on trend strength and RSI
-        position_size = 1.0
-        if 30 <= rsi_SPY[-1] <= 70:  # Reduce position in moderate RSI
-            position_size = 0.75
-        if 20 <= rsi_SPY[-1] <= 80:  # Further reduce in extreme RSI
-            position_size = 0.5
+        # Simple regime logic:
+        # Bullish if MACD histogram > 0 and RSI < 70
+        # Bearish if MACD histogram < 0 and RSI > 30
+        # Neutral otherwise
+        bullish = (latest_macdh > 0) and (latest_rsi_spy < 70)
+        bearish = (latest_macdh < 0) and (latest_rsi_spy > 30)
 
-        # Stop loss conditions
-        if sma_SPY[-1] < sma_SPY_long[-1] * 0.95:  # 5% below long-term SMA
-            allocation_dict = {"SPXL": 0, "SPXS": 0}
-            return TargetAllocation(allocation_dict)
+        # Set baseline allocations
+        # Adjust allocation depending on volatility and signals
+        # If volatility is high, reduce leveraged exposure.
+        # If bullish and low vol: more SPXL, some SPY
+        # If bullish and high vol: less SPXL, more SPY
+        # If bearish and low vol: more SPXS, some SPY
+        # If bearish and high vol: less SPXS, more SPY
+        # If neutral: mostly SPY
 
-        # Modified entry conditions with trend confirmation
-        if macdh_SPY[-1] < -1.68 and downward_trend >= 1:
-            allocation_dict = {"SPXS": position_size, "SPXL": 0}
-        else:
-            if rsi_SPY[-1] < 62 and upward_trend >= 1:
-                allocation_dict = {"SPXS": 0, "SPXL": position_size}
+        if bullish:
+            if current_vol < vol_threshold:
+                # Low vol & bullish
+                allocation_dict = {
+                    "SPXL": 0.8,
+                    "SPY": 0.2,
+                    "SPXS": 0.0
+                }
             else:
-                allocation_dict = {"SPXL": 0, "SPXS": 0}
+                # High vol & bullish
+                allocation_dict = {
+                    "SPXL": 0.4,
+                    "SPY": 0.6,
+                    "SPXS": 0.0
+                }
+
+        elif bearish:
+            if current_vol < vol_threshold:
+                # Low vol & bearish
+                allocation_dict = {
+                    "SPXL": 0.0,
+                    "SPY": 0.2,
+                    "SPXS": 0.8
+                }
+            else:
+                # High vol & bearish
+                allocation_dict = {
+                    "SPXL": 0.0,
+                    "SPY": 0.6,
+                    "SPXS": 0.4
+                }
+        else:
+            # Neutral scenario
+            # Mostly SPY to hedge, minimal leveraged exposure
+            allocation_dict = {
+                "SPXL": 0.0,
+                "SPY": 1.0,
+                "SPXS": 0.0
+            }
 
         return TargetAllocation(allocation_dict)
