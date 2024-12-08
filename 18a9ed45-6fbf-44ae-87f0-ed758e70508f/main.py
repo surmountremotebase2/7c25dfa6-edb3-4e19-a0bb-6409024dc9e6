@@ -1,53 +1,65 @@
 from surmount.base_class import Strategy, TargetAllocation
-from surmount.technical_indicators import SMA, MACD, RSI, ATR, STDEV
+from surmount.technical_indicators import SMA
 from surmount.logging import log
-import pandas as pd
-import numpy as np
+import pandas as pd 
+import numpy as np 
 
 class TradingStrategy(Strategy):
-    
-    print_flag = 1
-    
     @property
     def assets(self):
-        return ["SPXL", "SPXS", "SPY"]
+        # Define the assets to be used in the strategy
+        return ["SPXL", "SPY", "SPXS"]
 
     @property
     def interval(self):
-        return "1day"
+        # The data interval desired for the strategy. Daily in this case.
+        return "4hour"
 
     def run(self, data):
-        # Compute ATR for SPY (using a 14-day window as an example)
-        atr_values = ATR("SPY", data["ohlcv"], length=14)
-        current_vol = atr_values[-1] if len(atr_values) > 0 else 0.0
+        # This is the principal method where the strategy logic is defined.
+        
+        # Calculate the 5-day Simple Moving Average (SMA) for SPXL and SPY
+        sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
+        sma_SPY = SMA("SPY", data["ohlcv"], length=5)
+        sma_SPXS = SMA("SPXS", data["ohlcv"], length=5)
+        
+        # Ensure that we have enough data points to proceed
+        if not sma_SPXL or not sma_SPY or not sma_SPXS or len(sma_SPXL) < 5 or len(sma_SPY) < 5 or len(sma_SPXS) < 5:
+            # Returning a neutral or "do-nothing" allocation if insufficient data
+            return TargetAllocation({})
+        
+        # Check the recent performance difference between SPXL and SPY
+        # If SPXL has been underperforming SPY, allocate toward SPXL
 
-        # Example threshold for "high" volatility (this is arbitrary and should be tuned)
-        vol_threshold = 5.0  # Adjust this based on typical ATR values for SPY
+        spxl_delta = (sma_SPXL[-1] - sma_SPXL[-2]) / sma_SPXL[-1]
+        spy_delta = (sma_SPY[-1] - sma_SPY[-2]) / sma_SPY[-1]
+        spxs_delta = (sma_SPXS[-1] - sma_SPXS[-2]) / sma_SPXS[-1]
 
-        # Compute MACD and RSI for SPY
-        macd_SPY = MACD("SPY", data["ohlcv"], 12, 26)
-        rsi_SPY = RSI("SPY", data["ohlcv"], 14)
+        spy_recents = sma_SPY[-15:]
+        spy_differences = [spy_recents[i+1] - spy_recents[i] for i in range(len(spy_recents)-1)]
 
-        macdh_SPY = macd_SPY['MACDh_12_26_9']
-        latest_macdh = macdh_SPY[-1] if len(macdh_SPY) > 0 else 0
-        latest_rsi_spy = rsi_SPY[-1] if len(rsi_SPY) > 0 else 50
+        # Determine overall trend based on the last 5 days
+        upward_trend = sum(d > 0 for d in spy_differences)
+        downward_trend = sum(d < 0 for d in spy_differences)
 
-        # Determine market regime
-        bullish = (latest_macdh > 0) and (latest_rsi_spy < 70)
-        bearish = (latest_macdh < 0) and (latest_rsi_spy > 30)
-
-        # Adjust allocations based on ATR-based volatility
-        if bullish:
-            if current_vol < vol_threshold:
-                allocation_dict = {"SPXL": 0.8, "SPY": 0.2, "SPXS": 0.0}
+        #log("Checking trends")
+        if upward_trend > downward_trend:
+            allocation_dict = {"SPXS": 0.0}
+            if spxl_delta < spy_delta * 1.15:
+                allocation_dict = {"SPXL": 0.0}
             else:
-                allocation_dict = {"SPXL": 0.4, "SPY": 0.6, "SPXS": 0.0}
-        elif bearish:
-            if current_vol < vol_threshold:
-                allocation_dict = {"SPXL": 0.0, "SPY": 0.2, "SPXS": 0.8}
+                allocation_dict = {"SPXL": 1.0}
+        elif upward_trend < downward_trend:
+            allocation_dict = {"SPXL": 0.0}
+            if spxs_delta < abs(spy_delta * 1.15):
+                allocation_dict = {"SPXS": 0.0}
             else:
-                allocation_dict = {"SPXL": 0.0, "SPY": 0.6, "SPXS": 0.4}
+                allocation_dict = {"SPXS": 1.0}
         else:
-            allocation_dict = {"SPXL": 0.0, "SPY": 1.0, "SPXS": 0.0}
+            return TargetAllocation({})
+        
+        if not allocation_dict:
+            allocation_dict = TargetAllocation({})
 
+        # Return the target allocation based on our logic
         return TargetAllocation(allocation_dict)
