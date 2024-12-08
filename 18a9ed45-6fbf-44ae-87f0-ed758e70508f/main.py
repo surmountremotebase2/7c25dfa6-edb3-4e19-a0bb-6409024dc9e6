@@ -18,7 +18,7 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         if self.print_flag == 1:
-            log(data)
+            log(str(data))
             self.print_flag = 0
 
         # Extract OHLCV data for SPY
