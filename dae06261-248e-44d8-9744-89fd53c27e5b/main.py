@@ -110,14 +110,14 @@ class TradingStrategy(Strategy):
                 self.watermark = 0
                 self.buy_price = 0
                 allocation_dict = {"BTC-USD": 0.0}
-                self.count = -20
+                self.count = -10
                 return TargetAllocation(allocation_dict)
             
             if ((data["ohlcv"][-1]["BTC-USD"]["close"] - self.buy_price) / self.buy_price) > .5:
                 self.watermark = 0
                 self.buy_price = 0
                 allocation_dict = {"BTC-USD": 0.0}
-                self.count = -20
+                self.count = -5
                 return TargetAllocation(allocation_dict)
 
         if three_sma[-1] > three_sma[-2]:
