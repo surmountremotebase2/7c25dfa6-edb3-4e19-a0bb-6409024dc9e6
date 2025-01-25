@@ -121,7 +121,7 @@ class TradingStrategy(Strategy):
                 self.count = -5
                 return TargetAllocation(allocation_dict)
 
-        if three_sma[-1] > three_sma[-2]:
+        if three_sma[-1] > three_sma[-2] and three_sma[-2] > three_sma[-3]:
             if three_sma[-1] > five_sma[-1]:
                 allocation_dict = {"BTC-USD": 1.0}
                 #log(str(data["ohlcv"][-1]["BTC-USD"]["close"]))
