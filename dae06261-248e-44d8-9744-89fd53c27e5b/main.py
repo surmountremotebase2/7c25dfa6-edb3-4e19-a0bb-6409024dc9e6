@@ -110,7 +110,7 @@ class TradingStrategy(Strategy):
                 self.watermark = 0
                 self.buy_price = 0
                 allocation_dict = {"BTC-USD": 0.0}
-                self.count = -8
+                self.count = -20
                 return TargetAllocation(allocation_dict)
 
         if three_sma[-1] > three_sma[-2]:
