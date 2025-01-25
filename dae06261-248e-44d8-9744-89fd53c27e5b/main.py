@@ -103,7 +103,7 @@ class TradingStrategy(Strategy):
         if three_sma[-1] > three_sma[-2]:
             if three_sma[-1] > five_sma[-1]:
                 allocation_dict = {"BTC-USD": 1.0}
-                log(str(data["ohlcv"][-1]))
+                log(str(data["ohlcv"][-1]["BTC-USD"]))
             else:
                 allocation_dict = {"BTC-USD": 0.0}
         else:
