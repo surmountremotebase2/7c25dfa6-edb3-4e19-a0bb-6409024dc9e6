@@ -4,6 +4,9 @@ from surmount.logging import log
 import pandas as pd 
 import numpy as np 
 
+from surmount.logging import log
+from datetime import datetime
+
 class TradingStrategy(Strategy):
     @property
     def assets(self):
@@ -14,6 +17,10 @@ class TradingStrategy(Strategy):
     def interval(self):
         # The data interval desired for the strategy. Daily in this case.
         return "1hour"
+    
+    def __init__(self):
+      self.count = 0
+      self.buy_price = 0
     
     '''def run(self, data):
         # Calculate the historical SMAs for BTCUSD
@@ -80,6 +87,13 @@ class TradingStrategy(Strategy):
     def run(self, data):
         #allocation_dict = {"BTCUSD": 1.0}
 
+        if self.count == 0:
+            self.count += 1
+            allocation_dict = {"BTC-USD": 0.0}
+            return TargetAllocation(allocation_dict)
+
+        count += 1
+
         # Calculate the hitorical SMA's for BTCUSD
         three_sma = SMA("BTC-USD", data["ohlcv"], length=3)
         five_sma = SMA("BTC-USD", data["ohlcv"], length=5)
@@ -89,6 +103,7 @@ class TradingStrategy(Strategy):
         if three_sma[-1] > three_sma[-2]:
             if three_sma[-1] > five_sma[-1]:
                 allocation_dict = {"BTC-USD": 1.0}
+                log(str(data["ohlcv"]))
             else:
                 allocation_dict = {"BTC-USD": 0.0}
         else:
