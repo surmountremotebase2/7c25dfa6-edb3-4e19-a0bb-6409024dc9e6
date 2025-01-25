@@ -92,7 +92,7 @@ class TradingStrategy(Strategy):
             allocation_dict = {"BTC-USD": 0.0}
             return TargetAllocation(allocation_dict)
 
-        count += 1
+        self.count += 1
 
         # Calculate the hitorical SMA's for BTCUSD
         three_sma = SMA("BTC-USD", data["ohlcv"], length=3)
