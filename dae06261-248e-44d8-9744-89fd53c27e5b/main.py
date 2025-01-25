@@ -114,6 +114,7 @@ class TradingStrategy(Strategy):
                 return TargetAllocation(allocation_dict)
             
             if ((data["ohlcv"][-1]["BTC-USD"]["close"] - self.buy_price) / self.buy_price) > .5:
+                log("Take profit hit")
                 self.watermark = 0
                 self.buy_price = 0
                 allocation_dict = {"BTC-USD": 0.0}
