@@ -21,6 +21,7 @@ class TradingStrategy(Strategy):
     def __init__(self):
       self.count = 0
       self.buy_price = 0
+      self.watermark = 0
     
     '''def run(self, data):
         # Calculate the historical SMAs for BTCUSD
@@ -100,8 +101,12 @@ class TradingStrategy(Strategy):
         seven_sma = SMA("BTC-USD", data["ohlcv"], length=7)
         ten_sma = SMA("BTC-USD", data["ohlcv"], length=10)
         
-        if self.buy_price > 0: 
-            if ((self.buy_price - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.buy_price) > .05:
+        if self.buy_price > 0:
+            if self.watermark < data["ohlcv"][-1]["BTC-USD"]["close"]:
+                self.watermark = data["ohlcv"][-1]["BTC-USD"]["close"]
+                
+            if ((self.buy_price - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.buy_price) > .05 or ((self.watermark - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.watermark) > 0.02:
+                self.watermark = 0
                 self.buy_price = 0
                 allocation_dict = {"BTC-USD": 0.0}
                 return TargetAllocation(allocation_dict)
