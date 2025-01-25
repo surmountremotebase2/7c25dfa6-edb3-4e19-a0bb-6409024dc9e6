@@ -99,11 +99,12 @@ class TradingStrategy(Strategy):
         five_sma = SMA("BTC-USD", data["ohlcv"], length=5)
         seven_sma = SMA("BTC-USD", data["ohlcv"], length=7)
         ten_sma = SMA("BTC-USD", data["ohlcv"], length=10)
-
-        if ((self.buy_price - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.buy_price) > .05:
-            self.buy_price = 0
-            allocation_dict = {"BTC-USD": 0.0}
-            return TargetAllocation(allocation_dict)
+        
+        if self.buy_price > 0: 
+            if ((self.buy_price - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.buy_price) > .05:
+                self.buy_price = 0
+                allocation_dict = {"BTC-USD": 0.0}
+                return TargetAllocation(allocation_dict)
 
         if three_sma[-1] > three_sma[-2]:
             if three_sma[-1] > five_sma[-1]:
