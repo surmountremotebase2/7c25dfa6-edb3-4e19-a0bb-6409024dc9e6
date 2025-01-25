@@ -88,7 +88,7 @@ class TradingStrategy(Strategy):
     def run(self, data):
         #allocation_dict = {"BTCUSD": 1.0}
 
-        if self.count == 0:
+        if self.count < 1:
             self.count += 1
             allocation_dict = {"BTC-USD": 0.0}
             return TargetAllocation(allocation_dict)
