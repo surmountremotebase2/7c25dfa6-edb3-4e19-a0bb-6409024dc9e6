@@ -105,12 +105,12 @@ class TradingStrategy(Strategy):
             if self.watermark < data["ohlcv"][-1]["BTC-USD"]["close"]:
                 self.watermark = data["ohlcv"][-1]["BTC-USD"]["close"]
                 
-            if ((self.buy_price - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.buy_price) > .05 or ((self.watermark - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.watermark) > 0.02:
+            if ((self.buy_price - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.buy_price) > .05 or ((self.watermark - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.watermark) > 0.01:
                 log("Trailing or full exit hit")
                 self.watermark = 0
                 self.buy_price = 0
                 allocation_dict = {"BTC-USD": 0.0}
-                self.count = -10
+                self.count = -8
                 return TargetAllocation(allocation_dict)
 
         if three_sma[-1] > three_sma[-2]:
