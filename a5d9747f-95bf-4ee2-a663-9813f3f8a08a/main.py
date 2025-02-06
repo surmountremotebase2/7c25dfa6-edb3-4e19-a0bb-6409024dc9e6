@@ -21,7 +21,7 @@ class TradingStrategy(Strategy):
           - Technology (TECL)
           - Semiconductors (SOXL)
         """
-        return ["SPXL", "TQQQ", "UDOW", "TNA", "FAS", "TECL", "SOXL"]
+        return ["SPXL", "TQQQ", "UDOW", "TNA", "FAS"]
 
     @property
     def interval(self):
