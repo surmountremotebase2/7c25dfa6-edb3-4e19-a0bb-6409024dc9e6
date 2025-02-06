@@ -37,7 +37,7 @@ class TradingStrategy(Strategy):
         """
 
         # Weekly rebalance
-        if self.counter % 5 != 0:
+        if self.counter % 3 != 0:
             return TargetAllocation({})
         
         # Calculate 5-day SMA for each asset
