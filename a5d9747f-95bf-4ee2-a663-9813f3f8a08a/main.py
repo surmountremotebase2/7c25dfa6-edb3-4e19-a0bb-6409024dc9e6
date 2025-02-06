@@ -49,12 +49,12 @@ class TradingStrategy(Strategy):
         performance = {}
         for asset, sma_series in sma_dict.items():
             # Ensure we have at least 5 points in the SMA
-            if len(sma_series) < 3:
+            if len(sma_series) < 5:
                 # If insufficient data, treat performance as None or a very large negative value
                 performance[asset] = float('-inf')
             else:
                 last_val = sma_series[-1]
-                five_days_ago_val = sma_series[-3]
+                five_days_ago_val = sma_series[-5]
                 
                 # Prevent division by zero
                 if five_days_ago_val == 0:
