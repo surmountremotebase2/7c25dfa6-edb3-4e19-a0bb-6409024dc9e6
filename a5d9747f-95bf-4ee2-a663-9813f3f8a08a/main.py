@@ -11,8 +11,17 @@ class TradingStrategy(Strategy):
 
     @property
     def assets(self):
-        # Define the assets to be used in the strategy
-        return ["TQQQ", "TNA", "UPRO", "SPXL", "QLD", "SSO", "UDOW"]
+        """
+        A broader set of 3x leveraged ETFs covering various market segments:
+          - S&P 500 (SPXL)
+          - NASDAQ (TQQQ)
+          - Dow (UDOW)
+          - Small Caps (TNA)
+          - Financials (FAS)
+          - Technology (TECL)
+          - Semiconductors (SOXL)
+        """
+        return ["SPXL", "TQQQ", "UDOW", "TNA", "FAS", "TECL", "SOXL"]
 
     @property
     def interval(self):
@@ -20,53 +29,42 @@ class TradingStrategy(Strategy):
         return "1day"
 
     def run(self, data):
-        # This is the principal method where the strategy logic is defined.
+        """
+        1. Calculate 5-day SMA for each asset.
+        2. Determine the percent change of that 5-day SMA from 5 days ago to today.
+        3. Pick the top 3 performers based on this metric.
+        4. Allocate equally among them.
+        """
+
+        # Weekly rebalance
         if self.counter % 7 != 0:
             return TargetAllocation({})
+        
+        # Calculate 5-day SMA for each asset
+        sma_dict = {}
+        for asset in self.assets:
+            sma_series = SMA(asset, data["ohlcv"], length=5)
+            sma_dict[asset] = sma_series
 
-        # Correct the typos in the SMA calls
-        sma_TQQQ = SMA("TQQQ", data["ohlcv"], length=5)
-        sma_TNA = SMA("TNA", data["ohlcv"], length=5)
-        sma_UPRO = SMA("UPRO", data["ohlcv"], length=5)  # Corrected "lenth=5" -> "length=5"
-        sma_SPXL = SMA("SPXL", data["ohlcv"], length=5)
-        sma_QLD = SMA("QLD", data["ohlcv"], length=5)
-        sma_SSO = SMA("SSO", data["ohlcv"], length=5)
-        sma_UDOW = SMA("UDOW", data["ohlcv"], length=5)  # Corrected "SSO" -> "UDOW"
-
-        # Create a dictionary of asset -> SMA values for convenience
-        sma_dict = {
-            "TQQQ": sma_TQQQ,
-            "TNA": sma_TNA,
-            "UPRO": sma_UPRO,
-            "SPXL": sma_SPXL,
-            "QLD": sma_QLD,
-            "SSO": sma_SSO,
-            "UDOW": sma_UDOW
-        }
-
-        # 1) Calculate 5-day SMA percent change for each asset over the last 5 trading days
-        #    (close[-1] - close[-5]) / close[-5] on the 5-day SMA values.
+        # Calculate performance over the last 5 trading days
+        # (SMA[-1] - SMA[-5]) / SMA[-5]
         performance = {}
         for asset, sma_series in sma_dict.items():
-            # Ensure we have at least 5 points in the SMA
             if len(sma_series) < 5:
-                # If insufficient data, treat performance as None or a very large negative value
-                performance[asset] = float('-inf')
+                # Not enough data => rank very low
+                performance[asset] = float("-inf")
             else:
                 last_val = sma_series[-1]
                 five_days_ago_val = sma_series[-5]
-                
-                # Prevent division by zero
                 if five_days_ago_val == 0:
-                    performance[asset] = float('-inf')
+                    performance[asset] = float("-inf")
                 else:
                     performance[asset] = (last_val - five_days_ago_val) / five_days_ago_val
 
-        # 2) Sort assets by performance (descending) and take the top 3
+        # Sort by performance (descending), and pick top 3
         top_3_assets = sorted(performance, key=performance.get, reverse=True)[:3]
 
-        # 3) Assign an equal distribution among the top 3
+        # Create allocation dict with equal weights among the top 3
         allocation_dict = {asset: 1.0 / 3.0 for asset in top_3_assets}
 
-        # Return the TargetAllocation of the allocation_dict
         return TargetAllocation(allocation_dict)
