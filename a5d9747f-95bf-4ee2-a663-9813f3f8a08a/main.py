@@ -5,6 +5,10 @@ import pandas as pd
 import numpy as np
 
 class TradingStrategy(Strategy):
+
+    def __init__(self):
+        self.counter = 0
+
     @property
     def assets(self):
         # Define the assets to be used in the strategy
@@ -17,6 +21,8 @@ class TradingStrategy(Strategy):
 
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
+        if self.counter % 7 != 0:
+            return TargetAllocation({})
 
         # Correct the typos in the SMA calls
         sma_TQQQ = SMA("TQQQ", data["ohlcv"], length=5)
