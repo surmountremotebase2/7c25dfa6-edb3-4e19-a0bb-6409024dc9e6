@@ -1,146 +1,141 @@
-from typing import Dict, Tuple, List
-import pandas as pd
-import numpy as np
-
 from surmount.base_class import Strategy, TargetAllocation
-from surmount.technical_indicators import SMA, EMA
+from surmount.technical_indicators import SMA
 from surmount.logging import log
+import pandas as pd 
+import numpy as np 
+
+from surmount.logging import log
+from datetime import datetime
 
 class TradingStrategy(Strategy):
-    def __init__(self):
-        # Count is used as a "cool-down" period after triggering risk-off behavior.
-        self.count = 0
-    
     @property
-    def assets(self) -> List[str]:
-        """Assets to be traded by this strategy."""
+    def assets(self):
+        # Define the assets to be used in the strategy
         return ["BTC-USD"]
 
     @property
-    def interval(self) -> str:
-        """Data interval used by the strategy."""
+    def interval(self):
+        # The data interval desired for the strategy. Daily in this case.
         return "1hour"
-
-    def volatility_check(
-        self,
-        market: str,
-        data: Dict,
-        INTERVAL_WINDOW: int = 60,
-        n_future: int = 20,
-        volaT_percentile: float = 55.0,
-        volaH_percentile: float = 80.0
-    ) -> Tuple[Dict[str, float], int]:
-        """
-        Perform a volatility check and determine if the strategy should go risk-off.
-
-        Parameters
-        ----------
-        market : str
-            Market symbol (e.g., "BTC-USD").
-        data : dict
-            Data dictionary with OHLCV values.
-        INTERVAL_WINDOW : int
-            Rolling window size for volatility calculation.
-        n_future : int
-            Number of future periods used for forward-looking volatility.
-        volaT_percentile : float
-            Percentile for the lower volatility threshold.
-        volaH_percentile : float
-            Percentile for the higher volatility threshold.
-
-        Returns
-        -------
-        allocation_dict : Dict[str, float]
-            A dictionary of allocations by ticker.
-        count : int
-            Updated count for future risk-off periods.
-        """
-        # Extract close prices for the given market
-        closes = [entry[market]['close'] for entry in data['ohlcv'] if market in entry]
-        mrkt_df = pd.DataFrame(closes, columns=['close'])
+    
+    def __init__(self):
+      self.count = 0
+      self.buy_price = 0
+      self.watermark = 0
+    
+    '''def run(self, data):
+        # Calculate the historical SMAs for BTCUSD
+        three_sma = SMA("BTCUSD", data["ohlcv"], length=3)
+        five_sma = SMA("BTCUSD", data["ohlcv"], length=5)
+        seven_sma = SMA("BTCUSD", data["ohlcv"], length=7)
+        ten_sma = SMA("BTCUSD", data["ohlcv"], length=10)
         
-        # Compute log returns and fill any initial NaNs with 0
-        mrkt_df['log_returns'] = np.log(mrkt_df['close'] / mrkt_df['close'].shift(1))
-        mrkt_df['log_returns'].fillna(0, inplace=True)
+        # Set the number of periods to confirm the upward trend
+        N = 3  # Number of consecutive increases required
+        
+        # Check if the 3-period SMA has been increasing for the last N periods
+        upward_trend = all([three_sma[-i] > three_sma[-i-1] for i in range(1, N+1)])
+        
+        # Check if moving averages are aligned (shorter-term SMAs above longer-term SMAs)
+        ma_alignment = three_sma[-1] > five_sma[-1] > seven_sma[-1] > ten_sma[-1]
+        
+        if upward_trend and ma_alignment:
+            allocation_dict = {"BTCUSD": 1.0}
+        else:
+            allocation_dict = {"BTCUSD": 0.0}
+        
+        if not allocation_dict:
+            allocation_dict = TargetAllocation({})
 
-        allocation_dict = {market: 0.0}
+        return TargetAllocation(allocation_dict)'''
+    
+    '''def run(self, data):
+        #allocation_dict = {"BTCUSD": 1.0}
+        #return TargetAllocation(allocation_dict)
+        # Calculate SMAs
+        three_sma = SMA("BTCUSD", data["ohlcv"], length=5)
+        five_sma = SMA("BTCUSD", data["ohlcv"], length=10)
 
-        if len(mrkt_df) <= n_future:
-            # Not enough data to perform forward-looking volatility checks
-            return allocation_dict, self.count
+        # Set the number of periods to confirm the upward trend
+        N = 2  # Reduced from 3 to 2
 
-        # Compute current volatility (backward-looking)
-        mrkt_df['vol_current'] = (
-            mrkt_df['log_returns']
-            .rolling(window=INTERVAL_WINDOW)
-            .apply(lambda x: np.sqrt(np.sum(x**2) / (len(x) - 1)), raw=True)
-        )
-        # Backfill the initial window to avoid NaNs
-        mrkt_df['vol_current'].bfill(inplace=True)
+        # Check if the 3-period SMA has been increasing for the last N periods
+        upward_trend = all([three_sma[-i] > three_sma[-i-1] for i in range(1, N+1)])
 
-        # Compute future volatility (forward-looking)
-        future_shifted = mrkt_df['log_returns'].shift(n_future).fillna(0)
-        mrkt_df['vol_future'] = (
-            future_shifted
-            .rolling(window=INTERVAL_WINDOW)
-            .apply(lambda x: np.sqrt(np.sum(x**2) / (len(x) - 1)), raw=True)
-        )
-        mrkt_df['vol_future'].bfill(inplace=True)
+        # Relaxed moving average alignment
+        ma_alignment = three_sma[-1] > five_sma[-1]
 
-        # Determine volatility thresholds
-        volaT = np.percentile(mrkt_df['vol_current'], volaT_percentile)
-        volaH = np.percentile(mrkt_df['vol_current'], volaH_percentile)
+        # Include RSI for momentum confirmation
+        from surmount.technical_indicators import RSI
+        rsi = RSI("BTCUSD", data["ohlcv"], length=14)
+        momentum = rsi[-1] > 50
 
-        # Extract the most recent close and EMA
-        mrkt_close = mrkt_df['close'].iloc[-1]
-        mrkt_ema = EMA(market, data["ohlcv"], length=30)
+        # Position sizing based on confidence levels
+        if upward_trend and ma_alignment and momentum:
+            allocation_dict = {"BTCUSD": 1.0}
+        elif upward_trend and ma_alignment:
+            allocation_dict = {"BTCUSD": 0.5}
+        else:
+            allocation_dict = {"BTCUSD": 0.0}
 
-        # Volatility-based risk-off logic
-        current_vol = mrkt_df['vol_current'].iloc[-1]
-        future_vol = mrkt_df['vol_future'].iloc[-1]
+        # Exit strategy with confirmation
+        exit_signal = (three_sma[-1] < five_sma[-1]) and (rsi[-1] < 50)
+        if exit_signal:
+            allocation_dict = {"BTCUSD": 0.0}
 
-        if current_vol > future_vol and current_vol > volaT:
-            # Market is volatile, move to risk-off mode
-            if current_vol > volaH:
-                self.count = 10  # More volatile, longer wait
-            else:
-                self.count = 5   # Less volatile, shorter wait
-            allocation_dict = {market: 0.0}
-        elif self.count < 1 and mrkt_close > mrkt_ema[-1]:
-            # Conditions allow re-entry into the market
-            allocation_dict = {market: 1.0}
+        return TargetAllocation(allocation_dict)'''
 
-        return allocation_dict, self.count
+    def run(self, data):
+        #allocation_dict = {"BTCUSD": 1.0}
 
-    def run(self, data: Dict) -> TargetAllocation:
-        """
-        Main logic to run each interval. Adjusts allocation based on volatility and SMAs.
+        if self.count < 1:
+            self.count += 1
+            allocation_dict = {"BTC-USD": 0.0}
+            return TargetAllocation(allocation_dict)
 
-        Parameters
-        ----------
-        data : dict
-            Market OHLCV data.
+        self.count += 1
 
-        Returns
-        -------
-        TargetAllocation
-            The desired allocation for each asset at this interval.
-        """
-        # Decrement the risk-off count if active
-        self.count = max(0, self.count - 1)
-
-        # Check volatility conditions and possibly update count
-        allocation_dict, self.count = self.volatility_check("BTC-USD", data)
-
-        # If not in a risk-off period (count == 0), apply SMA trend logic
-        if self.count == 0:
-            short_sma = SMA("BTC-USD", data["ohlcv"], length=3)
-            mid_sma = SMA("BTC-USD", data["ohlcv"], length=5)
-
-            # If short-term SMA is rising and above the mid-term SMA, go long
-            if short_sma[-1] > short_sma[-2] and short_sma[-1] > mid_sma[-1]:
-                allocation_dict = {"BTC-USD": 1.0}
-            else:
+        # Calculate the hitorical SMA's for BTCUSD
+        three_sma = SMA("BTC-USD", data["ohlcv"], length=3)
+        five_sma = SMA("BTC-USD", data["ohlcv"], length=5)
+        seven_sma = SMA("BTC-USD", data["ohlcv"], length=7)
+        ten_sma = SMA("BTC-USD", data["ohlcv"], length=10)
+        
+        if self.buy_price > 0:
+            if self.watermark < data["ohlcv"][-1]["BTC-USD"]["close"]:
+                self.watermark = data["ohlcv"][-1]["BTC-USD"]["close"]
+                
+            if ((self.buy_price - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.buy_price) > .02 or ((self.watermark - data["ohlcv"][-1]["BTC-USD"]["close"]) / self.watermark) > 0.01:
+                #log("Trailing or full exit hit")
+                self.watermark = 0
+                self.buy_price = 0
                 allocation_dict = {"BTC-USD": 0.0}
+                self.count = -10
+                return TargetAllocation(allocation_dict)
+            
+            if ((data["ohlcv"][-1]["BTC-USD"]["close"] - self.buy_price) / self.buy_price) > .5:
+                #log("Take profit hit")
+                self.watermark = 0
+                self.buy_price = 0
+                allocation_dict = {"BTC-USD": 0.0}
+                self.count = -5
+                return TargetAllocation(allocation_dict)
 
+        if three_sma[-1] > three_sma[-2] and three_sma[-2] > three_sma[-3]:
+            if three_sma[-1] > five_sma[-1]:
+                allocation_dict = {"BTC-USD": 1.0}
+                #log(str(data["ohlcv"][-1]["BTC-USD"]["close"]))
+                self.buy_price = float(data["ohlcv"][-1]["BTC-USD"]["close"])
+                self.watermark = float(data["ohlcv"][-1]["BTC-USD"]["close"])
+            else:
+                self.buy_price = 0
+                allocation_dict = {"BTC-USD": 0.0}
+        else:
+            self.buy_price = 0
+            allocation_dict = {"BTC-USD": 0.0}
+        
+        if not allocation_dict:
+            allocation_dict = TargetAllocation({})
+
+        # Return the target allocation based on our logic
         return TargetAllocation(allocation_dict)
