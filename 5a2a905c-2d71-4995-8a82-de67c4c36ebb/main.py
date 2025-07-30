@@ -30,7 +30,8 @@ class TradingStrategy(Strategy):
         log(str(data['ohlcv'][-1]))
         
         
-        allocation_dict = TargetAllocation({})
+        #allocation_dict = TargetAllocation({})
+        return TargetAllocation({})
 
         # Return the target allocation based on our logic
-        return TargetAllocation(allocation_dict)
+        #return TargetAllocation(allocation_dict)
