@@ -24,7 +24,7 @@ class TradingStrategy(Strategy):
         # This is the principal method where the strategy logic is defined.
 
         # Check the opening candle high/low - wait for a rise above, or fall below. 
-        log(data['ohlcv'])
+        log(str(data['ohlcv']))
         
         
         if not allocation_dict:
