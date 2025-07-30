@@ -23,8 +23,11 @@ class TradingStrategy(Strategy):
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
 
+        # Check if we're looking at market open candle
+
+
         # Check the opening candle high/low - wait for a rise above, or fall below. 
-        log(str(data['ohlcv']))
+        log(str(data['ohlcv'][-1]))
         
         
         if not allocation_dict:
