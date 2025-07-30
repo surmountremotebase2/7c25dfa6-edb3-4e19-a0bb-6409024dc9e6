@@ -17,8 +17,8 @@ class TradingStrategy(Strategy):
     @property
     def interval(self):
         # The data interval desired for the strategy. Daily in this case.
-        return "5min"
-        #return "4hour"
+        #return "5min"
+        return "4hour"
 
     def run(self, data):
         # This is the principal method where the strategy logic is defined.
