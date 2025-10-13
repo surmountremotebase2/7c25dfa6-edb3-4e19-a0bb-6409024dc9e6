@@ -20,7 +20,7 @@ class TradingStrategy(Strategy):
         self.USE_INTERVAL = "1min"          # "1min" or "5min"
         self.ORB_WINDOW_MINUTES = 30        # 15 or 30
         self.RR_MULT = 1.25                 # TP in R; R = RISK_FRACTION * SPY opening range
-        self.RISK_FRACTION = 0.33           # ~1/3 of SPY range to account for 3x leverage
+        self.RISK_FRACTION = 0.5           # ~1/3 of SPY range to account for 3x leverage
         self.MAX_TRADES_PER_DAY = 1
         self.EOD_EXIT_TIME = time(15, 55)   # flatten 5 mins before close
         self.LAST_ENTRY_TIME = time(11, 0)  # avoid late-day entries
