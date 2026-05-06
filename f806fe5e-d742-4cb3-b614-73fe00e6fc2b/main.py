@@ -16,7 +16,14 @@ the day every call, so this prevents duplicate emissions):
   [ORB-ENTRY] Entry trigger: bar OHLCV, breakout magnitude, breakout-bar
               volume vs post-OR rolling avg.
   [ORB-EXIT]  Stop-out OR EOD-hold (TYPE=stop|eod): self-contained trade
-              record (entry context + exit context + signed P&L%).
+              record (entry context + exit context + signed P&L%) PLUS
+              MAE / MFE / TRAIL_DD path stats:
+                MAE      = max adverse excursion (signed pnl, ≤ 0)
+                MFE      = max favorable excursion (signed pnl, ≥ 0)
+                TRAIL_DD = max drawdown from running peak (≥ 0)
+              All path stats are CLOSE-based and direction-normalized
+              (positive = favorable for the trade's direction). Tracked
+              from the bar AFTER entry through and including the exit bar.
   [ORB-NOSIG] No entry by 15:50 ET: max excess above OH / below OL across
               the session — quantifies how close we got.
 
@@ -125,6 +132,12 @@ class TradingStrategy(Strategy):
         post_or_volumes = []
         max_up_excess = float("-inf")
         max_dn_excess = float("-inf")
+        # Post-entry path tracking (close-based, signed s.t. + = favorable, - = adverse).
+        # Updated each post-entry bar BEFORE stop logic so the stop bar itself is captured.
+        mae_pct = float("inf")
+        mfe_pct = float("-inf")
+        running_peak_pct = 0.0
+        max_trail_dd_pct = 0.0
 
         for ts, b in todays[opening_range_bars:]:
             if stopped_out:
@@ -143,6 +156,21 @@ class TradingStrategy(Strategy):
                 max_up_excess = up_excess
             if dn_excess > max_dn_excess:
                 max_dn_excess = dn_excess
+
+            if direction is not None and entry_ts is not None and ts > entry_ts:
+                if entry_direction == "long":
+                    signed_pnl = (close_px - entry_close) / entry_close
+                else:
+                    signed_pnl = (entry_close - close_px) / entry_close
+                if signed_pnl < mae_pct:
+                    mae_pct = signed_pnl
+                if signed_pnl > mfe_pct:
+                    mfe_pct = signed_pnl
+                if signed_pnl > running_peak_pct:
+                    running_peak_pct = signed_pnl
+                dd_from_peak = running_peak_pct - signed_pnl
+                if dd_from_peak > max_trail_dd_pct:
+                    max_trail_dd_pct = dd_from_peak
 
             if direction is None:
                 if close_px > opening_high + buffer:
@@ -217,10 +245,13 @@ class TradingStrategy(Strategy):
                 1 for ts2, _ in todays[opening_range_bars:]
                 if entry_ts < ts2 <= exit_ts
             )
+            mae_out = mae_pct if mae_pct != float("inf") else 0.0
+            mfe_out = mfe_pct if mfe_pct != float("-inf") else 0.0
             log(
                 "[ORB-EXIT] {ts} TYPE=stop DIR={d} ENTRY_TS={ets} BARS={n} "
                 "ENTRY_PX={ep:.2f} EXIT_PX={xp:.2f} PNL_PCT={pnl:.4f} "
-                "ENTRY_RATIO={er:.2f} EXIT_RATIO={xr:.2f}".format(
+                "ENTRY_RATIO={er:.2f} EXIT_RATIO={xr:.2f} "
+                "MAE={mae:.4f} MFE={mfe:.4f} TRAIL_DD={td:.4f}".format(
                     ts=exit_ts,
                     d=entry_direction.upper(),
                     ets=entry_ts,
@@ -230,6 +261,9 @@ class TradingStrategy(Strategy):
                     pnl=pnl_pct,
                     er=entry_ratio,
                     xr=exit_ratio,
+                    mae=mae_out,
+                    mfe=mfe_out,
+                    td=max_trail_dd_pct,
                 )
             )
 
@@ -256,10 +290,13 @@ class TradingStrategy(Strategy):
                 1 for ts2, _ in todays[opening_range_bars:]
                 if entry_ts < ts2 <= latest_ts
             )
+            mae_out = mae_pct if mae_pct != float("inf") else 0.0
+            mfe_out = mfe_pct if mfe_pct != float("-inf") else 0.0
             log(
                 "[ORB-EXIT] {ts} TYPE=eod DIR={d} ENTRY_TS={ets} BARS={n} "
                 "ENTRY_PX={ep:.2f} EXIT_PX={xp:.2f} PNL_PCT={pnl:.4f} "
-                "ENTRY_RATIO={er:.2f} EXIT_RATIO={xr:.2f}".format(
+                "ENTRY_RATIO={er:.2f} EXIT_RATIO={xr:.2f} "
+                "MAE={mae:.4f} MFE={mfe:.4f} TRAIL_DD={td:.4f}".format(
                     ts=latest_ts,
                     d=entry_direction.upper(),
                     ets=entry_ts,
@@ -269,6 +306,9 @@ class TradingStrategy(Strategy):
                     pnl=pnl_pct,
                     er=entry_ratio,
                     xr=exit_ratio,
+                    mae=mae_out,
+                    mfe=mfe_out,
+                    td=max_trail_dd_pct,
                 )
             )
 
