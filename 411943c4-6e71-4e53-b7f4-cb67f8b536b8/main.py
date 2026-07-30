@@ -429,7 +429,7 @@ class TradingStrategy(Strategy):
 
         if latest_ts == or_complete_ts:
             st0 = self._evaluate(todays, vol_ref, TRIGGER)
-            log(
+            '''log(
                 "[V2-SETUP] {d} UND={u} TRIG={tg} VOL_REF={v:.5f} N_SESS={n} "
                 "VOL_OK={ok} FLOOR={f:.4f} OPEN={o:.2f} UPPER={up:.2f} "
                 "LOWER={lo:.2f} OH={oh:.2f} OL={ol:.2f} UP_TRIG={ut:.2f} "
@@ -440,7 +440,7 @@ class TradingStrategy(Strategy):
                     ol=st0["or_low"], ut=st0["up_trig"], dt=st0["dn_trig"],
                     sd=st0["stop_dist"], a=st0["alloc"],
                 )
-            )
+            )'''
 
         # Volatility gate.
         # *** THE v2 BUG WAS HERE. *** v2 returned early on a failed gate, so
@@ -449,8 +449,8 @@ class TradingStrategy(Strategy):
         # no record. The gate now suppresses only the ALLOCATION and the
         # traded-trade logs. The counterfactual grid is emitted either way.
         if not vol_ok and latest_ts == or_complete_ts:
-            log("[V2-SKIP] {d} GATE=vol VOL_REF={v:.5f} FLOOR={f:.4f}".format(
-                d=today, v=vol_ref, f=VOL_FLOOR))
+            '''log("[V2-SKIP] {d} GATE=vol VOL_REF={v:.5f} FLOOR={f:.4f}".format(
+                d=today, v=vol_ref, f=VOL_FLOOR))'''
 
         st = self._evaluate(todays, vol_ref, TRIGGER)
         if st is None:
@@ -460,7 +460,7 @@ class TradingStrategy(Strategy):
         # Gated on vol_ok: these describe positions we actually took.
         if vol_ok and st["entry_ts"] == latest_ts and st["entry_bar"] is not None:
             b = st["entry_bar"]
-            log(
+            '''log(
                 "[V2-ENTRY] {ts} UND={u} DIR={d} C={c:.2f} OPEN={o:.2f} "
                 "BAND={bd:.2f} OR={orb:.2f} VOL_REF={v:.5f} STOP_PX={sp:.2f} "
                 "STOP_DIST={sd:.5f} ALLOC={a:.4f} ACCT_RISK={ar:.4f} "
@@ -474,7 +474,7 @@ class TradingStrategy(Strategy):
                     a=st["alloc"], ar=st["alloc"] * LEV_EFF * st["stop_dist"],
                     vol=float(b.get("volume", 0)),
                 )
-            )
+            )'''
 
         if vol_ok and st["exit_ts"] == latest_ts and st["exit_bar"] is not None:
             self._log_exit(st, "stop", st["exit_px"], st["exit_ts"])
@@ -483,7 +483,7 @@ class TradingStrategy(Strategy):
         if vol_ok and at_flat and st["in_position"]:
             self._log_exit(st, "flat", float(todays[-1][1]["close"]), latest_ts)
 
-        if at_flat and vol_ok:
+        '''if at_flat and vol_ok:
             if st["entry_ts"] is None and st["blocked_by"] is None:
                 log("[V2-NOSIG] {d} MAX_UP={mu:.4f} MAX_DN={md:.4f} "
                     "VOL_REF={v:.5f}".format(
@@ -493,7 +493,7 @@ class TradingStrategy(Strategy):
                         v=vol_ref))
             elif st["entry_ts"] is None:
                 log("[V2-SKIP] {d} GATE={g} TS={t} VOL_REF={v:.5f}".format(
-                    d=today, g=st["blocked_by"], t=st["blocked_ts"], v=vol_ref))
+                    d=today, g=st["blocked_by"], t=st["blocked_ts"], v=vol_ref))'''
         # The counterfactual grid — emitted on EVERY session, including
         # vol-gated ones. This placement is the whole point of v2.1.
         if at_flat:
@@ -514,7 +514,7 @@ class TradingStrategy(Strategy):
             pnl = (exit_px - st["entry_px"]) / st["entry_px"]
         else:
             pnl = (st["entry_px"] - exit_px) / st["entry_px"]
-        log(
+        '''log(
             "[V2-EXIT] {ts} TYPE={k} UND={u} DIR={d} ENTRY_TS={ets} BARS={n} "
             "ENTRY_PX={ep:.2f} EXIT_PX={xp:.2f} PNL_UND={p:.5f} "
             "PNL_ACCT={pa:.5f} ALLOC={a:.4f} MAE={mae:.5f} MFE={mfe:.5f} "
@@ -527,7 +527,7 @@ class TradingStrategy(Strategy):
                 mfe=st["mfe"] if st["mfe"] is not None else 0.0,
                 td=st["trail_dd"],
             )
-        )
+        )'''
 
     def _log_grid(self, ohlcv, day, traded_vol_ok):
         """Evaluate the pre-specified GRID and log it. Never traded.
@@ -565,10 +565,10 @@ class TradingStrategy(Strategy):
                 ok=int(vol_ref >= VOL_FLOOR),
                 sk=int(gate_blocks or not traded_vol_ok))
             if gate_blocks:
-                log(head + " RESULT=gated")
+                '''log(head + " RESULT=gated")'''
                 continue
             if st["entry_ts"] is None:
-                log(head + " RESULT=none GATE={g}".format(g=st["blocked_by"]))
+                '''log(head + " RESULT=none GATE={g}".format(g=st["blocked_by"]))'''
                 continue
             exit_px = (st["exit_px"] if st["stopped"]
                        else float(todays[-1][1]["close"]))
@@ -576,7 +576,7 @@ class TradingStrategy(Strategy):
                 pnl = (exit_px - st["entry_px"]) / st["entry_px"]
             else:
                 pnl = (st["entry_px"] - exit_px) / st["entry_px"]
-            log(head + (
+            '''log(head + (
                 " RESULT={r} DIR={dir} ENTRY_TS={ets} BARS={n} "
                 "ENTRY_PX={ep:.2f} EXIT_PX={xp:.2f} PNL_UND={p:.5f} "
                 "PNL_ACCT={pa:.5f} ALLOC={a:.4f} MAE={mae:.5f} "
@@ -588,3 +588,4 @@ class TradingStrategy(Strategy):
                     mae=st["mae"] if st["mae"] is not None else 0.0,
                     mfe=st["mfe"] if st["mfe"] is not None else 0.0,
                 ))
+'''
