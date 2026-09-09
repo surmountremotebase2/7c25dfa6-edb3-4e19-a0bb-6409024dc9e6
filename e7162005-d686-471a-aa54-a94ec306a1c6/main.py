@@ -3,7 +3,7 @@ from surmount.logging import log
 
 class TradingStrategy(Strategy):
     def __init__(self):
-        self.tickers = ["AQGNX", "AQGIX", "AQGRX", "STMZF"]
+        self.tickers = ["STMZF"]
         self.weights = [30, 30, 30]
         self.count = 0
 
