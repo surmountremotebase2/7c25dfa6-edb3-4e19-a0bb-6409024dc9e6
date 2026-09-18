@@ -1,7 +1,30 @@
+"""monday_ibs v1 -- Monday-down / IBS<0.5 mean-reversion, coworker exit. ARM C: tilt -- QQQ baseline, TQQQ on signal.
+
+Rule (engine semantics, next-bar-open fills):
+  * At the close of a Monday bar of SIGNAL: close < prior close AND IBS = (C-L)/(H-L) < IBS_MAX
+    -> emit VEHICLE 100%  (fills at the next bar's open).
+  * At the close of every held bar (the fill bar included): close > prior bar's high
+    -> emit flat/baseline (fills at the next open). After the MAX_HOLD-th held bar closes with
+    no trigger -> emit flat (cap). Signals while in a position are ignored.
+  * An explicit target is emitted on every bar (never None).
+
+Logging:
+  [MIBS-SIG]  entry signal: date, close, prev close, IBS
+  [MIBS-SKIP] a Monday that did not fire, with the reason
+  [MIBS-XSIG] exit signal: type=target|cap, days held
+  [MIBS-EXIT] the completed trade, logged on the bar whose OPEN is the exit fill:
+              PNL_ACCT = open_exit/open_entry - 1 on VEHICLE; PNL_BASE = same on BASELINE
+              (0 if cash); PNL_EXCESS = PNL_ACCT - PNL_BASE.
+"""
+from datetime import datetime
+
+from surmount.base_class import Strategy, TargetAllocation
+from surmount.logging import log
+
 # ---- arm constants (the only lines that differ between arm files) ----
 SIGNAL = "QQQ"      # bars the signal and exit are computed on
-VEHICLE = "QQQ"     # held while in a trade
-BASELINE = None     # held while flat (None = cash)
+VEHICLE = "TQQQ"    # held while in a trade
+BASELINE = "QQQ"    # held while flat
 # ----------------------------------------------------------------------
 IBS_MAX = 0.5
 MAX_HOLD = 7        # held bars; exit fills at the open of bar e + MAX_HOLD at the latest
